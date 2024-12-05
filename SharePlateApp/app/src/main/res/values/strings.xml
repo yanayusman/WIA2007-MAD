@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SharePlateApp</string>
+    <string name="get_started">Get Started</string>
+    <string name="already_have_account">Already have an Account? </string>
+    <string name="log_in">Log in</string>
+    <string name="share">Share</string>
+    <string name="plate">Plate</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login">Login</string>
+    <string name="cancel">Cancel</string>
+    <string name="forgot_password">Forgot your password?</string>
+</resources>
