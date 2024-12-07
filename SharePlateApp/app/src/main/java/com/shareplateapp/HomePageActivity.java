@@ -4,9 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomePageActivity extends AppCompatActivity {
 
@@ -23,9 +29,16 @@ public class HomePageActivity extends AppCompatActivity {
     private ImageView searchIcon, menuIcon;
     private GridLayout donationGrid;
     private BottomNavigationView bottomNavigationView;
+    private EditText searchEditText;
+    private List<DonationItem> allDonationItems = new ArrayList<>(); // Store all items
 
     // Sample data for donation items
     private List<DonationItem> donationItems = new ArrayList<>();
+
+    // Add these fields at the top of the class
+    private LinearLayout searchLayout;
+    private ImageView backArrow;
+    private View normalToolbarContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,33 @@ public class HomePageActivity extends AppCompatActivity {
         // Set up the toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
+
+        // Set up search functionality
+        searchIcon.setOnClickListener(v -> {
+            // Show search layout
+            searchLayout.setVisibility(View.VISIBLE);
+            normalToolbarContent.setVisibility(View.GONE);
+            searchEditText.requestFocus();
+            
+            // Show keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+        });
+
+        // Initialize search EditText
+        searchEditText = findViewById(R.id.search_edit_text);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filterDonationItems(s.toString());
+            }
+        });
 
         // Set up bottom navigation
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -67,10 +107,30 @@ public class HomePageActivity extends AppCompatActivity {
         donationItems.add(new DonationItem("Cooked Rice", "Food Item : Rice\nExpires : Jan 13\nQuantity : 6 servings remaining\nPickup Time : Available by 4 pm", "29.7 km away", R.drawable.rice));
         donationItems.add(new DonationItem("Clothing", "Item : Shirts\nCondition : Gently used\nCategory Tag : Clothing\nPickup Time : Available by 9 am", "10 km away", R.drawable.clothing));
 
+        // Store all donation items
+        allDonationItems.addAll(donationItems);
+
         // Inflate and add donation item views to the grid
         for (DonationItem item : donationItems) {
             addDonationItemView(item);
         }
+
+        // In onCreate, after finding views:
+        searchLayout = findViewById(R.id.search_layout);
+        backArrow = findViewById(R.id.back_arrow);
+        normalToolbarContent = findViewById(R.id.normal_toolbar_content);
+
+        // Add back arrow click listener
+        backArrow.setOnClickListener(v -> {
+            // Hide search layout
+            searchLayout.setVisibility(View.GONE);
+            normalToolbarContent.setVisibility(View.VISIBLE);
+            searchEditText.setText("");
+            
+            // Hide keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+        });
     }
 
     private void addDonationItemView(DonationItem item) {
@@ -96,6 +156,29 @@ public class HomePageActivity extends AppCompatActivity {
         });
 
         donationGrid.addView(itemView);
+    }
+
+    private void filterDonationItems(String query) {
+        donationGrid.removeAllViews(); // Clear current items
+        
+        if (query.isEmpty()) {
+            // Show all items if search is empty
+            for (DonationItem item : allDonationItems) {
+                addDonationItemView(item);
+            }
+        } else {
+            // Filter items based on name or description
+            String lowercaseQuery = query.toLowerCase();
+            List<DonationItem> filteredItems = allDonationItems.stream()
+                .filter(item -> 
+                    item.getName().toLowerCase().contains(lowercaseQuery) ||
+                    item.getDescription().toLowerCase().contains(lowercaseQuery))
+                .collect(Collectors.toList());
+            
+            for (DonationItem item : filteredItems) {
+                addDonationItemView(item);
+            }
+        }
     }
 
     // Placeholder for donation item data
