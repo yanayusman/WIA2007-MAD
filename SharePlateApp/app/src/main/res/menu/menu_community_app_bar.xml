@@ -5,16 +5,15 @@
     <!-- Search Icon -->
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search" <!-- Replace with your search icon -->
+        android:icon="@drawable/ic_search"
         android:title="Search"
-        app:showAsAction="ifRoom" />
-
+        app:showAsAction="always"/>
     <!-- Overflow Menu Icon -->
     <item
         android:id="@+id/action_more"
-        android:icon="@drawable/ic_more_vert" <!-- Replace with your overflow icon -->
+        android:icon="@drawable/ic_menu"
         android:title="More Options"
-        app:showAsAction="never">
+        app:showAsAction="always"/>
 
 
-</item></menu>
+</menu>
