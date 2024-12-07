@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,10 +21,10 @@ public class HomePageActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView searchIcon, menuIcon;
-    private LinearLayout donationItemsContainer;
+    private GridLayout donationGrid;
     private BottomNavigationView bottomNavigationView;
 
-    // Sample data for donation items (replace with your actual data)
+    // Sample data for donation items
     private List<DonationItem> donationItems = new ArrayList<>();
 
     @Override
@@ -35,7 +36,7 @@ public class HomePageActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         searchIcon = findViewById(R.id.search_icon);
         menuIcon = findViewById(R.id.menu_icon);
-        donationItemsContainer = findViewById(R.id.donation_items_container);
+        donationGrid = findViewById(R.id.donation_grid);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Set up the toolbar
@@ -44,19 +45,14 @@ public class HomePageActivity extends AppCompatActivity {
 
         // Set up bottom navigation
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    // Already on the home page, do nothing
-                    break;
-                case R.id.navigation_community:
-                    // TODO: Navigate to Community screen
-                    break;
-                case R.id.navigation_discover:
-                    // TODO: Navigate to Discover screen
-                    break;
-                case R.id.navigation_profile:
-                    // TODO: Navigate to Profile screen
-                    break;
+            if (item.getItemId() == R.id.navigation_home) {
+                // Already on the home page, do nothing
+            } else if (item.getItemId() == R.id.navigation_community) {
+                // TODO: Navigate to Community screen
+            } else if (item.getItemId() == R.id.navigation_actions) {
+                // TODO: Navigate to Actions screen
+            } else if (item.getItemId() == R.id.navigation_profile) {
+                // TODO: Navigate to Profile screen
             }
             return true;
         });
@@ -70,16 +66,15 @@ public class HomePageActivity extends AppCompatActivity {
         donationItems.add(new DonationItem("Pasta", "Food Item : Packaged Pasta\nExpires : Jun 21\nQuantity : 10 packs remaining\nPickup Time : Available anytime", "9.5 km away", R.drawable.pasta));
         donationItems.add(new DonationItem("Cooked Rice", "Food Item : Rice\nExpires : Jan 13\nQuantity : 6 servings remaining\nPickup Time : Available by 4 pm", "29.7 km away", R.drawable.rice));
         donationItems.add(new DonationItem("Clothing", "Item : Shirts\nCondition : Gently used\nCategory Tag : Clothing\nPickup Time : Available by 9 am", "10 km away", R.drawable.clothing));
-        donationItems.add(new DonationItem("Books", "Item : Novels\nCondition : Good condition\nCategory Tag : Books\nPickup Time : Available by 12 pm", "19 km away", R.drawable.books));
 
-        // Inflate and add donation item views
+        // Inflate and add donation item views to the grid
         for (DonationItem item : donationItems) {
             addDonationItemView(item);
         }
     }
 
     private void addDonationItemView(DonationItem item) {
-        View itemView = getLayoutInflater().inflate(R.layout.donation_item_view, donationItemsContainer, false);
+        View itemView = getLayoutInflater().inflate(R.layout.donation_item_view, donationGrid, false);
 
         ImageView itemImage = itemView.findViewById(R.id.item_image);
         ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
@@ -100,7 +95,7 @@ public class HomePageActivity extends AppCompatActivity {
             }
         });
 
-        donationItemsContainer.addView(itemView);
+        donationGrid.addView(itemView);
     }
 
     // Placeholder for donation item data

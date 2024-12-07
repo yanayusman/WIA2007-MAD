@@ -10,6 +10,7 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="dark_gray">#696969</color>
 
     <!-- Bottom Navigation Colors -->
     <color name="bottom_nav_selected">@color/button_green</color>

@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/item_image"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder_image" />
 
@@ -57,12 +57,12 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="Item description here..."
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -77,6 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="0.0 km"
+                    android:textColor="@color/dark_gray"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
