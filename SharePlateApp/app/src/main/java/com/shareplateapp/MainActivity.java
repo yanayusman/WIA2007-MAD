@@ -22,14 +22,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ConstraintLayout constraintLayout = findViewById(R.id.main);
-        AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
-        animationDrawable.setEnterFadeDuration(2500);
-        animationDrawable.setExitFadeDuration(5000);
-        animationDrawable.start();
+        
+        // Check if the background is actually an AnimationDrawable
+        if (constraintLayout.getBackground() instanceof AnimationDrawable) {
+            AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
+            animationDrawable.setEnterFadeDuration(2500);
+            animationDrawable.setExitFadeDuration(5000);
+            animationDrawable.start();
+        }
 
         MaterialTextView logInLink = findViewById(R.id.logInLink);
         logInLink.setOnClickListener(v -> {
-            // Start LoginActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
