@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Toolbar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Back Button"
+                android:layout_marginEnd="16dp" />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate UI"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Question 1: Overall Experience -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How would you rate your overall experience?"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/overall_experience_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/rating_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" />
+            <RadioButton android:id="@+id/rating_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" />
+            <RadioButton android:id="@+id/rating_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" />
+            <RadioButton android:id="@+id/rating_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" />
+            <RadioButton android:id="@+id/rating_5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" />
+        </RadioGroup>
+
+        <!-- Question 2: Ease of Use -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How easy was it to use the interface?"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/ease_of_use_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" />
+        </RadioGroup>
+
+        <!-- Question 3: Visual Appeal -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How visually appealing did you find the design?"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/visual_appeal_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" />
+        </RadioGroup>
+
+        <!-- Question 4: Features -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Did you find all the features you needed?"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/features_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Yes" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="No" />
+        </RadioGroup>
+
+        <!-- Question 5: Performance -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How satisfied are you with the performance?"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/performance_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" />
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" />
+        </RadioGroup>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="16dp">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:backgroundTint="@android:color/darker_gray" />
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Submit"
+                android:backgroundTint="@android:color/holo_green_dark" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
