@@ -24,13 +24,11 @@ public class HomePageActivity extends AppCompatActivity {
             if (itemId == R.id.navigation_home) {
                 replaceFragment(new HomeFragment());
             } else if (itemId == R.id.navigation_community) {
-                // TODO: Navigate to Community screen (replace with your CommunityFragment)
-                // replaceFragment(new CommunityFragment());
+                replaceFragment(new CommunityAllFragment());
             } else if (itemId == R.id.navigation_actions) {
                 // TODO: Navigate to Actions screen (replace with your ActionsFragment)
                 // replaceFragment(new ActionsFragment());
             } else if (itemId == R.id.navigation_profile) {
-                // TODO: Navigate to Profile screen (replace with your ProfileFragment)
                 replaceFragment(new ProfilePage());
             }
             return true;

@@ -13,16 +13,16 @@
         android:theme="@style/Theme.SharePlateApp"
         tools:targetApi="31">
         <activity
-            android:name=".CommunityDetailsActivity"
+            android:name=".CommunityDetailsFragment"
             android:exported="false" />
         <activity
-            android:name=".CommunityCampaignsActivity"
+            android:name=".CommunityCampaignsFragment"
             android:exported="false" />
         <activity
-            android:name=".CommunityVolunteeringActivity"
+            android:name=".CommunityVolunteeringFragment"
             android:exported="false" />
         <activity
-            android:name=".CommunitySearchActivity"
+            android:name=".CommunitySearchFragment"
             android:exported="false" />
         <activity
             android:name=".HomePageActivity"
@@ -31,7 +31,7 @@
             android:name=".Home"
             android:exported="false" />
         <activity
-            android:name=".CommunityAllActivity"
+            android:name=".CommunityAllFragment"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
