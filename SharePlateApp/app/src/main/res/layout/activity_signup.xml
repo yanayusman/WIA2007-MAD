@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/main"
-        tools:context=".LoginActivity">
+        tools:context=".SignupActivity">
 
         <ImageView
             android:id="@+id/logoImageView"
@@ -83,15 +83,17 @@
             app:layout_constraintStart_toStartOf="@+id/usernameEditText"
             app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
 
-        <TextView
-            android:id="@+id/forgotPasswordTextView"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/reenterPasswordEditText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:text="@string/forgot_password"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_small"
-            app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:background="@drawable/edittext_background"
+            android:hint="Re-enter Password"
+            android:inputType="textPassword"
+            android:padding="@dimen/spacing_medium"
+            app:layout_constraintEnd_toEndOf="@+id/usernameEditText"
+            app:layout_constraintStart_toStartOf="@+id/passwordEditText"
             app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
         <Button
@@ -101,20 +103,20 @@
             android:layout_marginTop="@dimen/spacing_large"
             android:backgroundTint="@color/button_green"
             android:padding="@dimen/spacing_medium"
-            android:text="@string/login"
+            android:text="@string/signup"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_medium"
             app:cornerRadius="30dp"
-            app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
-            app:layout_constraintStart_toStartOf="@+id/passwordEditText"
-            app:layout_constraintTop_toBottomOf="@+id/forgotPasswordTextView" />
+            app:layout_constraintEnd_toEndOf="@+id/reenterPasswordEditText"
+            app:layout_constraintStart_toStartOf="@+id/reenterPasswordEditText"
+            app:layout_constraintTop_toBottomOf="@+id/reenterPasswordEditText" />
 
         <TextView
-            android:id="@+id/orLoginWith"
+            android:id="@+id/orSignupWith"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="or Login with"
+            android:text="or Sign up with"
             android:textColor="@color/gray"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintEnd_toEndOf="@+id/loginButton"
@@ -128,13 +130,13 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:orientation="horizontal"
             android:gravity="center_horizontal"
-            app:layout_constraintTop_toBottomOf="@id/orLoginWith">
+            app:layout_constraintTop_toBottomOf="@id/orSignupWith">
 
             <ImageButton
                 android:id="@+id/googleButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="login with google"
+                android:layout_width="@dimen/icon_size_large"
+                android:layout_height="@dimen/icon_size_large"
+                android:contentDescription="sign up with google"
                 android:background="@drawable/google_button" />
 
         </LinearLayout>

@@ -8,6 +8,7 @@
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
     <string name="cancel">Cancel</string>
     <string name="forgot_password">Forgot your password?</string>
     <!-- TODO: Remove or change this placeholder text -->

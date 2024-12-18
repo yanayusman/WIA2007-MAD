@@ -36,5 +36,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
+
+        Button getStartedButton = findViewById(R.id.getStartedButton);
+        getStartedButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+            startActivity(intent);
+        });
     }
 }
