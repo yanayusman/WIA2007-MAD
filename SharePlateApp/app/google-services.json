@@ -12,7 +12,20 @@
           "package_name": "com.shareplateapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "738549068311-ivbb6etkdeobhjckfqqn6gv1009a7s02.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shareplateapp",
+            "certificate_hash": "d18b277f4fb670740524ebae45145ed34e16a43e"
+          }
+        },
+        {
+          "client_id": "738549068311-m05seq251o478ff8u0ukplgmev8g6fj4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCDQcM8_gpLj6wmK8O9sHrSt0kYntUb9YA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "738549068311-m05seq251o478ff8u0ukplgmev8g6fj4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
