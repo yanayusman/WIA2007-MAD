@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -22,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-
+    private static final String TAG = "LoginActivity";
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
@@ -73,20 +74,35 @@ public class LoginActivity extends AppCompatActivity {
                                 if (user != null) {
                                     if (user.isEmailVerified()) {
                                         // Email is verified, proceed to home page
+                                        Log.d(TAG, "signInWithEmail:success");
                                         Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                         finish();
                                     } else {
                                         // Email is not verified
+                                        Log.d(TAG, "signInWithEmail:email not verified");
                                         Toast.makeText(LoginActivity.this,
                                                 "Please verify your email address first",
                                                 Toast.LENGTH_LONG).show();
+                                        // Send verification email again
+                                        user.sendEmailVerification()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(LoginActivity.this,
+                                                                "Verification email sent again. Please check your inbox.",
+                                                                Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+                                            });
                                         mAuth.signOut();
                                     }
                                 }
                             } else {
                                 // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 String errorMessage = task.getException() != null ? 
                                     task.getException().getMessage() : 
                                     "Authentication failed";
@@ -102,5 +118,18 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if user is already signed in and email is verified
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 }
