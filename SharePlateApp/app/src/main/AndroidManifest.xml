@@ -13,23 +13,8 @@
         android:theme="@style/Theme.SharePlateApp"
         tools:targetApi="31">
         <activity
-            android:name=".CommunityDetailsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".CommunityCampaignsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".CommunityVolunteeringFragment"
-            android:exported="false" />
-        <activity
-            android:name=".CommunitySearchFragment"
-            android:exported="false" />
-        <activity
             android:name=".HomePageActivity"
             android:exported="true" />
-        <activity
-            android:name=".Home"
-            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
