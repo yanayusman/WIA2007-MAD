@@ -31,9 +31,6 @@
             android:name=".Home"
             android:exported="false" />
         <activity
-            android:name=".CommunityAllFragment"
-            android:exported="false" />
-        <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
