@@ -40,6 +40,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("androidx.credentials:credentials:1.5.0-beta01")
+    implementation("androidx.credentials:credentials-play-services:1.5.0-beta01")
     
     implementation(libs.appcompat)
     implementation(libs.material)
