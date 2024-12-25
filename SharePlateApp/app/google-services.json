@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "738549068311-ivbb6etkdeobhjckfqqn6gv1009a7s02.apps.googleusercontent.com",
+          "client_id": "738549068311-biai6fe9g5en5l3128bsff83c6bbg1iu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.shareplateapp",
-            "certificate_hash": "d18b277f4fb670740524ebae45145ed34e16a43e"
+            "certificate_hash": "223fb5a21259831f8efad64fc8d418b9d43cd675"
           }
         },
         {
