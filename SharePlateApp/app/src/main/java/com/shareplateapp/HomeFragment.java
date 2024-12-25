@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Urgent Donation Card components
+        /* Comment out Urgent Donation Card components
         CardView urgentDonationCard = view.findViewById(R.id.urgent_donation_card);
         TextView urgentText = view.findViewById(R.id.urgent_text);
         TextView itemTitle = view.findViewById(R.id.item_title);
@@ -102,6 +102,7 @@ public class HomeFragment extends Fragment {
         TextView quantityText = view.findViewById(R.id.quantity_text);
         TextView pickupTimeText = view.findViewById(R.id.pickup_time_text);
         TextView perishableText = view.findViewById(R.id.perishable_text);
+        */
 
         return view;
     }
