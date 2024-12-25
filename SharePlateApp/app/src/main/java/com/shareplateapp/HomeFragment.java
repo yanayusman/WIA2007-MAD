@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment {
         View itemView = getLayoutInflater().inflate(R.layout.donation_item_view, donationGrid, false);
 
         ImageView itemImage = itemView.findViewById(R.id.item_image);
-        ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
+//        ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
         TextView itemName = itemView.findViewById(R.id.item_name);
         TextView itemDescription = itemView.findViewById(R.id.item_description);
         TextView itemDistance = itemView.findViewById(R.id.item_distance);

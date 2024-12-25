@@ -6,7 +6,8 @@
     android:layout_columnWeight="1"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    android:backgroundTint="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,13 +25,13 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder_image" />
 
-            <ImageView
-                android:id="@+id/bookmark_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_margin="8dp"
-                android:src="@drawable/ic_bookmark_border" />
+<!--            <ImageView-->
+<!--                android:id="@+id/bookmark_icon"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end|top"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:src="@drawable/ic_bookmark_border" />-->
         </FrameLayout>
 
         <LinearLayout
@@ -57,7 +58,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="Item description here..."
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
