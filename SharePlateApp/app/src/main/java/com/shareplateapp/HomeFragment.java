@@ -13,12 +13,14 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,33 +38,24 @@ public class HomeFragment extends Fragment {
     private ImageView backArrow;
     private View normalToolbarContent;
 
+    private DonationItemRepository donationItemRepository;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Initialize all views first
-        toolbar = view.findViewById(R.id.toolbar);
-        searchIcon = view.findViewById(R.id.search_icon);
-        menuIcon = view.findViewById(R.id.menu_icon);
-        donationGrid = view.findViewById(R.id.donation_grid);
-        searchEditText = view.findViewById(R.id.search_edit_text);
-        searchLayout = view.findViewById(R.id.search_layout);
-        backArrow = view.findViewById(R.id.back_arrow);
-        normalToolbarContent = view.findViewById(R.id.normal_toolbar_content);
+        // Initialize views and repository
+        initializeViews(view);
+        donationItemRepository = new DonationItemRepository();
 
-        // Initialize donation items list
-        allDonationItems = new ArrayList<>();
-
-        // Add sample data (move this to a separate method if you fetch from a database/API)
-        allDonationItems.add(new DonationItem("Fresh Bread", "Food Item : Bread\nExpires : Nov 29\nQuantity : 5 loaves remaining\nPickup Time : Available by 5 pm", "6.7 km away", R.drawable.bread));
-        allDonationItems.add(new DonationItem("Leftover Pizza", "Food Item: Pizza\nExpires: Nov 28\nQuantity: 2 slices remaining\nPickup Time: *Pick up by 2 PM", "1.8 km away", R.drawable.pizza));
-        allDonationItems.add(new DonationItem("Non-dairy Milk", "Food Item : Non-dairy milk\nExpires : Dec 5\nQuantity : 7 cartons remaining\nPickup Time : Available by 6 pm", "6.7 km away", R.drawable.milk));
-        allDonationItems.add(new DonationItem("Fruit Basket", "Food Item : Fruits\nExpires : Feb 4\nQuantity : 8 baskets remaining\nPickup Time : Available anytime", "7 km away", R.drawable.fruits));
-        allDonationItems.add(new DonationItem("Bags", "Item : Backpacks\nCondition : Used\nCategory Tag : Accessories\nPickup Time : Available by 7 pm", "13.8 km away", R.drawable.bags));
-        allDonationItems.add(new DonationItem("Pasta", "Food Item : Packaged Pasta\nExpires : Jun 21\nQuantity : 10 packs remaining\nPickup Time : Available anytime", "9.5 km away", R.drawable.pasta));
-        allDonationItems.add(new DonationItem("Cooked Rice", "Food Item : Rice\nExpires : Jan 13\nQuantity : 6 servings remaining\nPickup Time : Available by 4 pm", "29.7 km away", R.drawable.rice));
-        allDonationItems.add(new DonationItem("Clothing", "Item : Shirts\nCondition : Gently used\nCategory Tag : Clothing\nPickup Time : Available by 9 am", "10 km away", R.drawable.clothing));
+        // Set up swipe refresh
+        swipeRefreshLayout.setOnRefreshListener(this::loadDonationItems);
+        
+        // Load donation items from Firestore
+        loadDonationItems();
 
         // Set up search functionality
         searchIcon.setOnClickListener(v -> {
@@ -98,11 +91,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Inflate and add donation item views to the grid
-        for (DonationItem item : allDonationItems) {
-            addDonationItemView(item);
-        }
-
         // Urgent Donation Card components
         CardView urgentDonationCard = view.findViewById(R.id.urgent_donation_card);
         TextView urgentText = view.findViewById(R.id.urgent_text);
@@ -116,6 +104,50 @@ public class HomeFragment extends Fragment {
         TextView perishableText = view.findViewById(R.id.perishable_text);
 
         return view;
+    }
+
+    private void initializeViews(View view) {
+        // Initialize all views first
+        toolbar = view.findViewById(R.id.toolbar);
+        searchIcon = view.findViewById(R.id.search_icon);
+        menuIcon = view.findViewById(R.id.menu_icon);
+        donationGrid = view.findViewById(R.id.donation_grid);
+        searchEditText = view.findViewById(R.id.search_edit_text);
+        searchLayout = view.findViewById(R.id.search_layout);
+        backArrow = view.findViewById(R.id.back_arrow);
+        normalToolbarContent = view.findViewById(R.id.normal_toolbar_content);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+    }
+
+    private void loadDonationItems() {
+        // Show refresh indicator
+        swipeRefreshLayout.setRefreshing(true);
+        
+        donationItemRepository.getAllDonationItems(new DonationItemRepository.OnDonationItemsLoadedListener() {
+            @Override
+            public void onDonationItemsLoaded(List<DonationItem> items) {
+                allDonationItems = items;
+                // Clear existing views
+                donationGrid.removeAllViews();
+                // Add loaded items to the grid
+                for (DonationItem item : allDonationItems) {
+                    addDonationItemView(item);
+                }
+                // Hide refresh indicator
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), 
+                        "Error loading donation items: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                }
+                // Hide refresh indicator even on error
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void addDonationItemView(DonationItem item) {

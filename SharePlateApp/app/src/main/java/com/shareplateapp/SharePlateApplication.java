@@ -10,5 +10,8 @@ public class SharePlateApplication extends Application {
         
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
+        
+        // Populate initial data
+        new DonationItemRepository().populateInitialData();
     }
 }
