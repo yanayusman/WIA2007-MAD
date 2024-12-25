@@ -5,177 +5,268 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/light_gray"
     tools:context=".CommunityAllFragment">
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="144dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="133dp"
-        android:layout_marginEnd="134dp"
-        android:src="@drawable/join_community"
-        app:layout_constraintBottom_toTopOf="@+id/joinPromptTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="48dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/horizontalLineView"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="80dp"
-        android:background="#000000"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="146dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="147dp"
-        android:fontFamily="sans-serif"
-        android:text="Community"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
+        <LinearLayout
+            android:id="@+id/normal_toolbar_content2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="16dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/shareplate_logo_image" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Community"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/search_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_search" />
+
+            <ImageView
+                android:id="@+id/menu_icon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_menu" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/search_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_gray"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:layout_editor_absoluteX="411dp">
+
+            <ImageView
+                android:id="@+id/back_arrow2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_back" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/search_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:alpha="0.5"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/search_edit_text2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:hint="bread"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/filter_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_filter" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="410dp"
+        android:layout_height="667dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/shareplate_logo_image" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar2">
 
-    <TextView
-        android:id="@+id/joinPromptTextView"
-        android:layout_width="359dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginEnd="26dp"
-        android:fontFamily="sans-serif"
-        android:text="Would you be interested in joining SharePlate volunteers to rescue surplus food?"
-        android:textAlignment="center"
-        android:textColor="#228B22"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/horizontalLineView" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    <Button
-        android:id="@+id/interestedButton"
-        android:layout_width="125dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="50dp"
-        android:backgroundTint="#228B22"
-        android:fontFamily="sans-serif"
-        android:padding="8dp"
-        android:text="I'm interested >"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/joinPromptTextView"
-        app:layout_constraintTop_toTopOf="@id/joinPromptTextView" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/notNowButton"
-        android:layout_width="127dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/not_now_button_background"
-        android:fontFamily="sans-serif"
-        android:padding="8dp"
-        android:text="Not right now"
-        android:textColor="#228B22"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@id/joinPromptTextView"
-        app:layout_constraintTop_toTopOf="@id/joinPromptTextView" />
+                <Button
+                    android:id="@+id/campaignsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:fontFamily="sans-serif"
+                    android:shadowColor="#80000000"
+                    android:shadowDy="5"
+                    android:shadowRadius="7"
+                    android:text="Campaigns"
+                    android:textColor="#8F8F8F"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/volunteeringButton"
+                    app:layout_constraintTop_toBottomOf="@+id/interestedButton" />
 
-    <FrameLayout
-        android:layout_width="414dp"
-        android:layout_height="440dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_constraintEnd_toEndOf="parent" />
+                <Button
+                    android:id="@+id/volunteeringButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:fontFamily="sans-serif"
+                    android:shadowColor="#80000000"
+                    android:shadowDy="5"
+                    android:shadowRadius="7"
+                    android:text="Volunteering"
+                    android:textColor="#8F8F8F"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/campaignsButton"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/allEventsButton"
+                    app:layout_constraintTop_toBottomOf="@+id/interestedButton" />
 
-    <Button
-        android:id="@+id/allEventsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:backgroundTint="#FFFFFF"
-        android:fontFamily="sans-serif"
-        android:text="All Events"
-        android:textColor="#228B22"
-        android:textStyle="bold"
-        android:shadowColor="#80000000"
-        android:shadowDy="5"
-        android:shadowRadius="7"
-        app:layout_constraintEnd_toStartOf="@+id/volunteeringButton"
-        app:layout_constraintTop_toBottomOf="@id/joinPromptTextView" />
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="144dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/join_community"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/volunteeringButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:backgroundTint="#FFFFFF"
-        android:fontFamily="sans-serif"
-        android:text="Volunteering"
-        android:textColor="#8F8F8F"
-        android:textStyle="bold"
-        android:shadowColor="#80000000"
-        android:shadowDy="5"
-        android:shadowRadius="7"
-        app:layout_constraintEnd_toStartOf="@+id/campaignsButton"
-        app:layout_constraintTop_toBottomOf="@id/joinPromptTextView" />
+                <TextView
+                    android:id="@+id/joinPromptTextView"
+                    android:layout_width="359dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif"
+                    android:text="Would you be interested in joining SharePlate volunteers to rescue surplus food?"
+                    android:textAlignment="center"
+                    android:textColor="#228B22"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
-    <Button
-        android:id="@+id/campaignsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="15dp"
-        android:backgroundTint="#FFFFFF"
-        android:fontFamily="sans-serif"
-        android:text="Campaigns"
-        android:textColor="#8F8F8F"
-        android:textStyle="bold"
-        android:shadowColor="#80000000"
-        android:shadowDy="5"
-        android:shadowRadius="7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/joinPromptTextView" />
+                <Button
+                    android:id="@+id/interestedButton"
+                    android:layout_width="125dp"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#228B22"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:text="I'm interested >"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@+id/notNowButton"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/joinPromptTextView" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="33dp"
-        app:layout_constraintStart_toEndOf="@+id/titleTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_search" />
+                <Button
+                    android:id="@+id/notNowButton"
+                    android:layout_width="127dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/not_now_button_background"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:text="Not right now"
+                    android:textColor="#228B22"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/interestedButton"
+                    app:layout_constraintTop_toBottomOf="@+id/joinPromptTextView" />
+
+                <Button
+                    android:id="@+id/allEventsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:fontFamily="sans-serif"
+                    android:shadowColor="#80000000"
+                    android:shadowDy="5"
+                    android:shadowRadius="7"
+                    android:text="All Events"
+                    android:textColor="#228B22"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/volunteeringButton"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/interestedButton" />
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="400dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@color/gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/event_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <!--    <FrameLayout-->
     <!--        android:layout_width="409dp"-->
