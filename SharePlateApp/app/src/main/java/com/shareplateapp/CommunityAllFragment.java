@@ -55,7 +55,9 @@ public class CommunityAllFragment extends Fragment {
 
         // Add sample data (move this to a separate method if you fetch from a database/API)
         allEvents.add(new Campaign("Campaign for Zero Hunger", "Support SDG 2: Zero Hunger by attending this awareness event. Activities include food sharing, talks, and more.", "KLCC Park", "Dec 18, 2024", R.drawable.bread));
-        allEvents.add(new Volunteering("Food Distribution Drive", "Help distribute surplus food to underprivileged families. Volunteers are needed for sorting, packaging, and handing out food items.", "Community Center, Jalan Semarak", "Dec 10, 2024", R.drawable.pizza, 16, 20));
+        allEvents.add(new Volunteering("Food Distribution Drive", "Help distribute surplus food to underprivileged families. Volunteers are needed for sorting, packaging, and handing out food items.", "Community Center, Jalan Semarak", "Dec 10, 2024", R.drawable.pizza, 4, 20));
+        allEvents.add(new Campaign("Cooking Workshop: Meals from Surplus Food", "Learn how to create delicious meals from surplus ingredients. Free for all participants!", "Sustainable Kitchen, TTDI", "Dec 15, 2024", R.drawable.bread));
+        allEvents.add(new Volunteering("Educational Workshop Volunteer", "Support facilitators in teaching kids about food security and sustainable practices. No prior experience required.", "SK Taman Melati", "Jan 5, 2025", R.drawable.pizza, 4, 25));
 
 
         // Set up search functionality
