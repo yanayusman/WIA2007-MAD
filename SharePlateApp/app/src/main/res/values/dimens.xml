@@ -17,4 +17,6 @@
     <dimen name="icon_size_small">24dp</dimen>
     <dimen name="icon_size_medium">36dp</dimen>
     <dimen name="icon_size_large">48dp</dimen>
+
+    <dimen name="default_padding">10dp</dimen>
 </resources>
