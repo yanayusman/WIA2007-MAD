@@ -59,8 +59,8 @@
             android:layout_height="match_parent"
             android:background="@color/light_gray"
             android:gravity="center_vertical"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/back_arrow"
@@ -72,8 +72,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="36dp"
-                android:layout_weight="1"
                 android:layout_marginEnd="16dp"
+                android:layout_weight="1"
                 android:background="@drawable/search_background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -82,21 +82,21 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_search"
-                    android:alpha="0.5"/>
+                    android:alpha="0.5"
+                    android:src="@drawable/ic_search" />
 
                 <EditText
                     android:id="@+id/search_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:hint="bread"
-                    android:textSize="16sp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:hint="bread"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -104,8 +104,8 @@
                 android:id="@+id/filter_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:padding="12dp"
                 android:layout_marginEnd="8dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_filter" />
         </LinearLayout>
 
@@ -176,7 +176,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintBaseline_toBaselineOf="@id/item_title"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <ImageView
                         android:id="@+id/item_image"
@@ -251,7 +251,6 @@
                         </LinearLayout>
 
 
-
                     </LinearLayout>
 
                     <TextView
@@ -263,7 +262,7 @@
                         android:textColor="@color/red"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/details_layout"/>
+                        app:layout_constraintTop_toBottomOf="@+id/details_layout" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

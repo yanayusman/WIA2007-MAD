@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation("androidx.activity:activity:1.9.3")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
