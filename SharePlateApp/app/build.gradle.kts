@@ -42,13 +42,13 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-identity:18.0.1")
-    implementation("androidx.credentials:credentials:1.2.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("com.google.android.gms:play-services-identity:18.1.0")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -61,10 +61,10 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation("com.makeramen:roundedimageview:2.3.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("androidx.cardview:cardview:1.0.0")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0")
 }
