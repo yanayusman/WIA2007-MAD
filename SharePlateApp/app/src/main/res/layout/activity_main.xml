@@ -78,7 +78,7 @@
 
     <View
         android:id="@+id/bottomSheetView"
-        android:layout_width="413dp"
+        android:layout_width="match_parent"
         android:layout_height="182dp"
         android:background="@drawable/bottom_sheet_background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,33 +96,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="32dp"
+        android:paddingTop="0dp"
         android:paddingEnd="32dp"
-        android:paddingTop="32dp"
         android:paddingBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bottomSheetView">
 
-    <Button
-        android:id="@+id/getStartedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/button_green"
-        android:padding="16dp"
-        android:text="@string/get_started"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:cornerRadius="30dp" />
+        <Button
+            android:id="@+id/getStartedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_green"
+            android:padding="16dp"
+            android:text="@string/get_started"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="30dp" />
 
         <LinearLayout
             android:id="@+id/loginTextContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:orientation="horizontal">
 
-        <TextView
+            <TextView
                 android:id="@+id/loginText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
