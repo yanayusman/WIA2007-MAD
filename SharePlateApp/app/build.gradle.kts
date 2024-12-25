@@ -65,6 +65,7 @@ dependencies {
 
     // Google Identity Services
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    implementation(libs.firebase.firestore)
 
     // Testing
     testImplementation(libs.junit)
