@@ -26,8 +26,7 @@ public class HomePageActivity extends AppCompatActivity {
             } else if (itemId == R.id.navigation_community) {
                 replaceFragment(new CommunityAllFragment());
             } else if (itemId == R.id.navigation_actions) {
-                // TODO: Navigate to Actions screen (replace with your ActionsFragment)
-                // replaceFragment(new ActionsFragment());
+                replaceFragment(new ActionsFragment());
             } else if (itemId == R.id.navigation_profile) {
                 replaceFragment(new ProfilePage());
             }
