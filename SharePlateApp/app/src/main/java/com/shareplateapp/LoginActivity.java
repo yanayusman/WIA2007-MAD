@@ -35,8 +35,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import androidx.credentials.CredentialManager;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.GetCredentialException;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -48,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton googleButton;
     private GoogleSignInClient mGoogleSignInClient;
     private ExecutorService executorService;
+    private CredentialManager credentialManager;
+    private Executor executor;
 
     // ActivityResultLauncher for Google Sign-In
     ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
@@ -147,20 +158,79 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Configure Google Sign-In
+        // Initialize CredentialManager
+        credentialManager = CredentialManager.create(this);
+        executor = Executors.newSingleThreadExecutor();
+
+        // Initialize GoogleSignInClient for fallback
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        googleButton.setOnClickListener(v -> signInWithGoogle());
+        // Configure Google Sign-In with GetGoogleIdOption
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .setFilterByAuthorizedAccounts(false)
+                .setAutoSelectEnabled(false)
+                .setNonce(null)
+                .build();
+
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
+
+        googleButton.setOnClickListener(v -> signInWithGoogle(request));
 
         cancelTextView.setOnClickListener(v -> finish());
     }
 
-    private void signInWithGoogle() {
+    private void signInWithGoogle(GetCredentialRequest request) {
+        executor.execute(() -> {
+            try {
+                Log.d(TAG, "Starting Google Sign-In process");
+                credentialManager.getCredentialAsync(
+                        LoginActivity.this,
+                        request,
+                        null,
+                        executor,
+                        new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                            @Override
+                            public void onResult(@NonNull GetCredentialResponse result) {
+                                Log.d(TAG, "Credential retrieved successfully");
+                                if (result.getCredential() instanceof GoogleIdTokenCredential) {
+                                    GoogleIdTokenCredential credential = (GoogleIdTokenCredential) result.getCredential();
+                                    String idToken = credential.getIdToken();
+                                    if (idToken != null) {
+                                        Log.d(TAG, "ID token retrieved successfully");
+                                        runOnUiThread(() -> firebaseAuthWithGoogle(idToken));
+                                    } else {
+                                        Log.e(TAG, "ID token is null");
+                                        runOnUiThread(() -> fallbackToTraditionalGoogleSignIn());
+                                    }
+                                } else {
+                                    Log.e(TAG, "Unexpected credential type: " + result.getCredential().getClass().getName());
+                                    runOnUiThread(() -> fallbackToTraditionalGoogleSignIn());
+                                }
+                            }
+
+                            @Override
+                            public void onError(GetCredentialException e) {
+                                Log.e(TAG, "Google Sign-In error", e);
+                                runOnUiThread(() -> fallbackToTraditionalGoogleSignIn());
+                            }
+                        }
+                );
+            } catch (Exception e) {
+                Log.e(TAG, "Fatal error starting credential manager", e);
+                runOnUiThread(() -> fallbackToTraditionalGoogleSignIn());
+            }
+        });
+    }
+
+    private void fallbackToTraditionalGoogleSignIn() {
+        Log.d(TAG, "Falling back to traditional Google Sign-In");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
@@ -209,6 +279,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (executor instanceof ExecutorService) {
+            ((ExecutorService) executor).shutdown();
+        }
         executorService.shutdown();
     }
 }
