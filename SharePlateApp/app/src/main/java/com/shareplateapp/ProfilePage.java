@@ -73,10 +73,28 @@ public class ProfilePage extends Fragment {
     }
 
     private void signOut() {
-        Log.d(TAG, "signOut: Attempting to sign out user");
+        Log.d(TAG, "signOut: Showing confirmation dialog");
+        
+        // Create and show confirmation dialog
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Sign Out")
+            .setMessage("Are you sure you want to sign out?")
+            .setPositiveButton("Yes", (dialog, which) -> {
+                Log.d(TAG, "signOut: User confirmed sign out");
+                performSignOut();
+            })
+            .setNegativeButton("No", (dialog, which) -> {
+                Log.d(TAG, "signOut: User cancelled sign out");
+                dialog.dismiss();
+            })
+            .show();
+    }
+
+    private void performSignOut() {
+        Log.d(TAG, "performSignOut: Attempting to sign out user");
         try {
             mAuth.signOut();
-            Log.d(TAG, "signOut: User signed out successfully");
+            Log.d(TAG, "performSignOut: User signed out successfully");
             Toast.makeText(getContext(), "Signed out successfully", Toast.LENGTH_SHORT).show();
             
             // Navigate to MainActivity
@@ -90,7 +108,7 @@ public class ProfilePage extends Fragment {
                 getActivity().finish();
             }
         } catch (Exception e) {
-            Log.e(TAG, "signOut: Failed to sign out", e);
+            Log.e(TAG, "performSignOut: Failed to sign out", e);
             Toast.makeText(getContext(), "Sign out failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
