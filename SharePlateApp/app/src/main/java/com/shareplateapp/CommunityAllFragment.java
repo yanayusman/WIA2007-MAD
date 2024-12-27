@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -107,7 +106,7 @@ public class CommunityAllFragment extends Fragment {
 
         ImageView itemImage = itemView.findViewById(R.id.item_image);
         TextView itemName = itemView.findViewById(R.id.item_name);
-        TextView itemDescription = itemView.findViewById(R.id.item_description);
+        TextView itemDescription = itemView.findViewById(R.id.item_foodCategory);
         TextView eventDate = itemView.findViewById(R.id.event_date);
         TextView eventLocation = itemView.findViewById(R.id.event_location);
 

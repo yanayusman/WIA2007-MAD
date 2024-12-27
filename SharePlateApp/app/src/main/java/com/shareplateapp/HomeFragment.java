@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -157,12 +156,18 @@ public class HomeFragment extends Fragment {
         ImageView itemImage = itemView.findViewById(R.id.item_image);
 //        ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
         TextView itemName = itemView.findViewById(R.id.item_name);
-        TextView itemDescription = itemView.findViewById(R.id.item_description);
+        TextView itemFoodCategory = itemView.findViewById(R.id.item_foodCategory);
+        TextView itemExpiredDate = itemView.findViewById(R.id.item_expiredDate);
+        TextView itemQuantity = itemView.findViewById(R.id.item_quantity);
+        TextView itemPickupTime = itemView.findViewById(R.id.item_pickupTime);
         TextView itemDistance = itemView.findViewById(R.id.item_distance);
 
         itemImage.setImageResource(item.getImageResourceId());
         itemName.setText(item.getName());
-        itemDescription.setText(item.getDescription());
+        itemFoodCategory.setText("Food Category: " + (item.getFoodCategory() != null ? item.getFoodCategory() : "N/A"));
+        itemExpiredDate.setText("Expires: " + (item.getExpiredDate() != null ? item.getExpiredDate() : "N/A"));
+        itemQuantity.setText("Quantity: " + (item.getQuantity() != null ? item.getQuantity() : "N/A"));
+        itemPickupTime.setText("Pickup Time: " + (item.getPickupTime() != null ? item.getPickupTime() : "N/A"));
         itemDistance.setText(item.getDistance());
 
         itemView.setOnClickListener(v -> {
@@ -184,7 +189,10 @@ public class HomeFragment extends Fragment {
             List<DonationItem> filteredItems = allDonationItems.stream()
                     .filter(item ->
                             item.getName().toLowerCase().contains(lowercaseQuery) ||
-                                    item.getDescription().toLowerCase().contains(lowercaseQuery))
+                                    item.getFoodCategory().toLowerCase().contains(lowercaseQuery) ||
+                                    item.getExpiredDate().toLowerCase().contains(lowercaseQuery) ||
+                                    String.valueOf(item.getQuantity()).contains(lowercaseQuery) ||
+                                    item.getPickupTime().toLowerCase().contains(lowercaseQuery))
                     .collect(Collectors.toList());
 
             for (DonationItem item : filteredItems) {
@@ -192,4 +200,5 @@ public class HomeFragment extends Fragment {
             }
         }
     }
+
 }

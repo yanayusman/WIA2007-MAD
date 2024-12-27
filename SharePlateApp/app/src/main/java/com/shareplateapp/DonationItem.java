@@ -1,15 +1,16 @@
 package com.shareplateapp;
 
 public class DonationItem {
-    private String name;
-    private String description;
-    private String distance;
+    private String name, foodCategory, expiredDate, quantity, pickupTime, distance;
     private int imageResourceId;
 
     // Constructor
-    public DonationItem(String name, String description, String distance, int imageResourceId) {
+    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String distance, int imageResourceId) {
         this.name = name;
-        this.description = description;
+        this.foodCategory = foodCategory;
+        this.expiredDate = expiredDate;
+        this.quantity = quantity;
+        this.pickupTime = pickupTime;
         this.distance = distance;
         this.imageResourceId = imageResourceId;
     }
@@ -19,9 +20,15 @@ public class DonationItem {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getFoodCategory() {
+        return foodCategory;
     }
+
+    public String getExpiredDate(){ return expiredDate; }
+
+    public String getQuantity(){ return quantity; }
+
+    public String getPickupTime(){ return pickupTime; }
 
     public String getDistance() {
         return distance;

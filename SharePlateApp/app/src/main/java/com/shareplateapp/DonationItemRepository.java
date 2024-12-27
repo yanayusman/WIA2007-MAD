@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DonationItemRepository {
     private static final String COLLECTION_NAME = "allDonationItems";
@@ -27,11 +28,14 @@ public class DonationItemRepository {
                 List<DonationItem> items = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     String name = document.getString("name");
-                    String description = document.getString("description");
+                    String foodCategory = document.getString("foodCategory");
+                    String expiredDate = document.getString("expiredDate");
+                    String quantity = document.getString("quantity");
+                    String pickupTime = document.getString("pickupTime");
                     String distance = document.getString("distance");
-                    int imageResourceId = document.getLong("imageResourceId").intValue();
+                    int imageResourceId = document.getLong("imageResourceID").intValue();
                     
-                    items.add(new DonationItem(name, description, distance, imageResourceId));
+                    items.add(new DonationItem(name, foodCategory, expiredDate, quantity, pickupTime, distance, imageResourceId));
                 }
                 listener.onDonationItemsLoaded(items);
             })
@@ -41,15 +45,18 @@ public class DonationItemRepository {
     public void addDonationItem(DonationItem item) {
         Map<String, Object> donationData = new HashMap<>();
         donationData.put("name", item.getName());
-        donationData.put("description", item.getDescription());
+        donationData.put("foodCategory", item.getFoodCategory());
+        donationData.put("expiredDate", item.getFoodCategory());
+        donationData.put("quantity", item.getQuantity());
+        donationData.put("pickupTime", item.getPickupTime());
         donationData.put("distance", item.getDistance());
-        donationData.put("imageResourceId", item.getImageResourceId());
+        donationData.put("imageResourceID", item.getImageResourceId());
 
         db.collection(COLLECTION_NAME)
             .add(donationData)
-            .addOnSuccessListener(documentReference -> 
+            .addOnSuccessListener(documentReference ->
                 System.out.println("Document added with ID: " + documentReference.getId()))
-            .addOnFailureListener(e -> 
+            .addOnFailureListener(e ->
                 System.err.println("Error adding document: " + e));
     }
 
@@ -62,11 +69,13 @@ public class DonationItemRepository {
                     // Add sample data
                     addDonationItem(new DonationItem(
                         "(sample) Fresh Bread",
-                        "Food Item : Bread\nExpires : Nov 29\nQuantity : 5 loaves remaining\nPickup Time : Available by 5 pm",
+                        "Food Item : Bread",
+                            "Expires : Nov 29",
+                            "5",
+                            "Pickup Time : Available by 5 pm",
                         "6.7 km away",
                         R.drawable.bread
                     ));
-                    // Add other sample items...
                 }
             });
     }
