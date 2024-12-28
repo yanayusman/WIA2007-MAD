@@ -34,6 +34,12 @@ public class FoodItemDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Add back button click listener
+        ImageView backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
         // Get views
         ImageView itemImage = view.findViewById(R.id.detail_item_image);
         TextView itemName = view.findViewById(R.id.detail_item_name);
