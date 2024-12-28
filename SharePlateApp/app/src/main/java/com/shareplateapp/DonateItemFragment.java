@@ -47,7 +47,7 @@ public class DonateItemFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_donate_item, container, false);
+        return inflater.inflate(R.layout.fragment_donate_food, container, false);
     }
 
     @Override

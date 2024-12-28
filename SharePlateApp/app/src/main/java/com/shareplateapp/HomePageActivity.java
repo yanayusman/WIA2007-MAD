@@ -6,12 +6,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomePageActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
+    private boolean isFragmentTransactionInProgress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,17 +22,29 @@ public class HomePageActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.navigation_home) {
-                replaceFragment(new HomeFragment());
-            } else if (itemId == R.id.navigation_community) {
-                replaceFragment(new CommunityAllFragment());
-            } else if (itemId == R.id.navigation_actions) {
-                replaceFragment(new ActionsFragment());
-            } else if (itemId == R.id.navigation_profile) {
-                replaceFragment(new ProfilePage());
+            // Prevent multiple rapid transactions
+            if (isFragmentTransactionInProgress) {
+                return false;
             }
-            return true;
+
+            int itemId = item.getItemId();
+            Fragment fragment = null;
+
+            if (itemId == R.id.navigation_home) {
+                fragment = new HomeFragment();
+            } else if (itemId == R.id.navigation_community) {
+                fragment = new CommunityAllFragment();
+            } else if (itemId == R.id.navigation_actions) {
+                fragment = new ActionsFragment();
+            } else if (itemId == R.id.navigation_profile) {
+                fragment = new ProfilePage();
+            }
+
+            if (fragment != null) {
+                replaceFragment(fragment);
+                return true;
+            }
+            return false;
         });
 
         // Load the HomeFragment initially
@@ -40,9 +54,15 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment) {
+        isFragmentTransactionInProgress = true;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+        
+        // Reset the flag after a short delay to allow the transaction to complete
+        new Handler().postDelayed(() -> {
+            isFragmentTransactionInProgress = false;
+        }, 300); // 300ms should be enough for most fragment transitions
     }
 }

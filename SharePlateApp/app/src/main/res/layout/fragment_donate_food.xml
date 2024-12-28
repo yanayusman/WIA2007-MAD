@@ -59,7 +59,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Food Name"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -73,7 +74,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Food Category"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -91,7 +93,8 @@
                     android:hint="Expiry Date"
                     android:inputType="none"
                     android:focusable="false"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -105,7 +108,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Quantity"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -123,7 +127,8 @@
                     android:hint="Pickup Time"
                     android:inputType="none"
                     android:focusable="false"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -137,7 +142,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Location"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
