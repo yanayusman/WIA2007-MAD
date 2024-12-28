@@ -15,4 +15,8 @@
     <!-- Bottom Navigation Colors -->
     <color name="bottom_nav_selected">@color/button_green</color>
     <color name="bottom_nav_unselected">@color/gray</color>
+
+    <!-- Add these color definitions if they don't exist -->
+    <color name="button_green_dark">#1B6E1B</color>
+    <color name="button_green_light">#4CAF50</color>
 </resources>

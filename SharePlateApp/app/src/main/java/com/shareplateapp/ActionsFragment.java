@@ -7,6 +7,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +64,23 @@ public class ActionsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_actions, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Find the Give Away Food button
+        Button giveAwayFoodButton = view.findViewById(R.id.give_away_food_button);
+        
+        // Set click listener
+        giveAwayFoodButton.setOnClickListener(v -> {
+            // Navigate to DonateItemFragment
+            requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new DonateItemFragment())
+                .addToBackStack(null)
+                .commit();
+        });
     }
 }

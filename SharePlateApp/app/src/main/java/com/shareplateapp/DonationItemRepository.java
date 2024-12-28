@@ -46,7 +46,7 @@ public class DonationItemRepository {
         Map<String, Object> donationData = new HashMap<>();
         donationData.put("name", item.getName());
         donationData.put("foodCategory", item.getFoodCategory());
-        donationData.put("expiredDate", item.getFoodCategory());
+        donationData.put("expiredDate", item.getExpiredDate());
         donationData.put("quantity", item.getQuantity());
         donationData.put("pickupTime", item.getPickupTime());
         donationData.put("location", item.getLocation());

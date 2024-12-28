@@ -3,7 +3,12 @@ package com.shareplateapp;
 import java.io.Serializable;
 
 public class DonationItem implements Serializable {
-    private String name, foodCategory, expiredDate, quantity, pickupTime, location;
+    private String name;
+    private String foodCategory;
+    private String expiredDate;
+    private String quantity;
+    private String pickupTime;
+    private String location;
     private int imageResourceId;
 
     // Constructor
@@ -26,11 +31,17 @@ public class DonationItem implements Serializable {
         return foodCategory;
     }
 
-    public String getExpiredDate(){ return expiredDate; }
+    public String getExpiredDate() {
+        return expiredDate;
+    }
 
-    public String getQuantity(){ return quantity; }
+    public String getQuantity() {
+        return quantity;
+    }
 
-    public String getPickupTime(){ return pickupTime; }
+    public String getPickupTime() {
+        return pickupTime;
+    }
 
     public String getLocation() {
         return location;

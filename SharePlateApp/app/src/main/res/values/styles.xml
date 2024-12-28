@@ -15,4 +15,13 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="CustomPickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/button_green</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomButtonStyle</item>
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/button_green</item>
+    </style>
+
 </resources>
