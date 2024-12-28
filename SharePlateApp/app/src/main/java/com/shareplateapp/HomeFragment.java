@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
         // Initialize all views first
         toolbar = view.findViewById(R.id.toolbar);
         searchIcon = view.findViewById(R.id.search_icon);
-        menuIcon = view.findViewById(R.id.menu_icon);
+//        menuIcon = view.findViewById(R.id.menu_icon);
         donationGrid = view.findViewById(R.id.donation_grid);
         searchEditText = view.findViewById(R.id.search_edit_text);
         searchLayout = view.findViewById(R.id.search_layout);

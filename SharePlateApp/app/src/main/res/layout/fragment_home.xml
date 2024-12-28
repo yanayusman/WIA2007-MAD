@@ -45,12 +45,12 @@
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_search" />
 
-            <ImageView
-                android:id="@+id/menu_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_menu" />
+<!--            <ImageView-->
+<!--                android:id="@+id/menu_icon"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginEnd="16dp"-->
+<!--                android:src="@drawable/ic_menu" />-->
         </LinearLayout>
 
         <LinearLayout
