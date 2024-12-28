@@ -1,17 +1,19 @@
 package com.shareplateapp;
 
-public class DonationItem {
-    private String name, foodCategory, expiredDate, quantity, pickupTime, distance;
+import java.io.Serializable;
+
+public class DonationItem implements Serializable {
+    private String name, foodCategory, expiredDate, quantity, pickupTime, location;
     private int imageResourceId;
 
     // Constructor
-    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String distance, int imageResourceId) {
+    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String location, int imageResourceId) {
         this.name = name;
         this.foodCategory = foodCategory;
         this.expiredDate = expiredDate;
         this.quantity = quantity;
         this.pickupTime = pickupTime;
-        this.distance = distance;
+        this.location = location;
         this.imageResourceId = imageResourceId;
     }
 
@@ -30,8 +32,8 @@ public class DonationItem {
 
     public String getPickupTime(){ return pickupTime; }
 
-    public String getDistance() {
-        return distance;
+    public String getLocation() {
+        return location;
     }
 
     public int getImageResourceId() {

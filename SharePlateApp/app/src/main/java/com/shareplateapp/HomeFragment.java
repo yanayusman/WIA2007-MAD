@@ -168,10 +168,15 @@ public class HomeFragment extends Fragment {
         itemExpiredDate.setText("Expires: " + (item.getExpiredDate() != null ? item.getExpiredDate() : "N/A"));
         itemQuantity.setText("Quantity: " + (item.getQuantity() != null ? item.getQuantity() : "N/A"));
         itemPickupTime.setText("Pickup Time: " + (item.getPickupTime() != null ? item.getPickupTime() : "N/A"));
-        itemDistance.setText(item.getDistance());
+        itemDistance.setText(item.getLocation());
 
         itemView.setOnClickListener(v -> {
-            // TODO: Handle item click (e.g., open item details in a new fragment/activity)
+            FoodItemDetailFragment detailFragment = FoodItemDetailFragment.newInstance(item);
+            requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, detailFragment)
+                .addToBackStack(null)
+                .commit();
         });
 
         donationGrid.addView(itemView);

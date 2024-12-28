@@ -32,10 +32,10 @@ public class DonationItemRepository {
                     String expiredDate = document.getString("expiredDate");
                     String quantity = document.getString("quantity");
                     String pickupTime = document.getString("pickupTime");
-                    String distance = document.getString("distance");
+                    String location = document.getString("location");
                     int imageResourceId = document.getLong("imageResourceID").intValue();
                     
-                    items.add(new DonationItem(name, foodCategory, expiredDate, quantity, pickupTime, distance, imageResourceId));
+                    items.add(new DonationItem(name, foodCategory, expiredDate, quantity, pickupTime, location, imageResourceId));
                 }
                 listener.onDonationItemsLoaded(items);
             })
@@ -49,7 +49,7 @@ public class DonationItemRepository {
         donationData.put("expiredDate", item.getFoodCategory());
         donationData.put("quantity", item.getQuantity());
         donationData.put("pickupTime", item.getPickupTime());
-        donationData.put("distance", item.getDistance());
+        donationData.put("location", item.getLocation());
         donationData.put("imageResourceID", item.getImageResourceId());
 
         db.collection(COLLECTION_NAME)
@@ -73,7 +73,7 @@ public class DonationItemRepository {
                             "Expires : Nov 29",
                             "5",
                             "Pickup Time : Available by 5 pm",
-                        "6.7 km away",
+                        "Petaling Jaya",
                         R.drawable.bread
                     ));
                 }
