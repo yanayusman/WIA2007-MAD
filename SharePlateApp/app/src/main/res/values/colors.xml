@@ -13,7 +13,7 @@
     <color name="dark_gray">#696969</color>
 
     <color name="dialog_color_1">#FDD736</color>
-    <color name="dialog_color_2">#3B5796</color>
+    <color name="dialog_color_2">#228B22</color>
 
     <!-- Bottom Navigation Colors -->
     <color name="bottom_nav_selected">@color/button_green</color>

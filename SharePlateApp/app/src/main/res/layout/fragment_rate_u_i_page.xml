@@ -93,24 +93,26 @@
                     android:id="@+id/laterBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="Maybe Later"
-                    android:textAllCaps="false"
-                    android:textColor="#CC000000"
+                    android:background="@drawable/round_back_brown_6"
+                    android:fontFamily="@font/poppins"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:background="@drawable/round_back_brown_6" />
+                    android:text="Maybe Later"
+                    android:textAllCaps="false"
+                    android:textColor="#CC000000" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/rateNowBtn"
-                    android:layout_marginStart="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="Rate Now"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/round_back_blue_10"
+                    android:fontFamily="@font/poppins"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:background="@drawable/round_back_blue_10" />
+                    android:text="Rate Now"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
