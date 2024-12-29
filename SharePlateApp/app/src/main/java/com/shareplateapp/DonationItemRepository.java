@@ -34,9 +34,10 @@ public class DonationItemRepository {
                         String quantity = document.getString("quantity");
                         String pickupTime = document.getString("pickupTime");
                         String location = document.getString("location");
+                        String ownerUsername = document.getString("ownerUsername");
+                        String status = document.getString("status");
                         
-                        // Handle potential null values for imageResourceId
-                        int imageResourceId = R.drawable.placeholder_image; // Default value
+                        int imageResourceId = R.drawable.placeholder_image;
                         Long resourceIdLong = document.getLong("imageResourceID");
                         if (resourceIdLong != null) {
                             imageResourceId = resourceIdLong.intValue();
@@ -44,9 +45,10 @@ public class DonationItemRepository {
                         
                         String imageUrl = document.getString("imageUrl");
                     
-                        // Only add if required fields are present
+                        Long createdAt = document.getLong("createdAt");
+                        
                         if (name != null && !name.isEmpty()) {
-                            items.add(new DonationItem(
+                            DonationItem item = new DonationItem(
                                 name,
                                 foodCategory != null ? foodCategory : "",
                                 expiredDate != null ? expiredDate : "",
@@ -54,12 +56,19 @@ public class DonationItemRepository {
                                 pickupTime != null ? pickupTime : "",
                                 location != null ? location : "",
                                 imageResourceId,
-                                imageUrl
-                            ));
+                                imageUrl,
+                                ownerUsername != null ? ownerUsername : "Anonymous"
+                            );
+                            // Set the document ID and status
+                            item.setDocumentId(document.getId());
+                            item.setStatus(status != null ? status : "active");
+                            if (createdAt != null) {
+                                item.setCreatedAt(createdAt);
+                            }
+                            items.add(item);
                         }
                     } catch (Exception e) {
                         System.err.println("Error parsing document: " + e.getMessage());
-                        // Continue to next document
                     }
                 }
                 listener.onDonationItemsLoaded(items);
@@ -78,19 +87,21 @@ public class DonationItemRepository {
             donationData.put("location", item.getLocation());
             donationData.put("imageResourceID", item.getImageResourceId());
             donationData.put("imageUrl", item.getImageUrl());
-
-            // Log the image URL for debugging
-            System.out.println("Saving donation with image URL: " + item.getImageUrl());
+            donationData.put("ownerUsername", item.getOwnerUsername());
+            donationData.put("status", item.getStatus());
+            donationData.put("createdAt", System.currentTimeMillis());
 
             db.collection(COLLECTION_NAME)
                 .add(donationData)
                 .addOnSuccessListener(documentReference -> {
-                    System.out.println("Document added with ID: " + documentReference.getId());
-                    System.out.println("Successfully saved donation with image URL: " + item.getImageUrl());
+                    String docId = documentReference.getId();
+                    // Set the document ID in the item
+                    item.setDocumentId(docId);
+                    // No need to update the document with its ID since we can use the Firestore ID
+                    System.out.println("Document added with ID: " + docId);
                 })
                 .addOnFailureListener(e -> {
                     System.err.println("Error adding document: " + e);
-                    System.err.println("Failed to save donation with image URL: " + item.getImageUrl());
                 });
         } catch (Exception e) {
             System.err.println("Error creating donation data: " + e);
@@ -103,7 +114,7 @@ public class DonationItemRepository {
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 if (queryDocumentSnapshots.isEmpty()) {
-                    // Add sample data
+                    // Add sample data with owner username
                     addDonationItem(new DonationItem(
                         "(sample) Fresh Bread",
                         "Food Item : Bread",
@@ -112,9 +123,71 @@ public class DonationItemRepository {
                         "Pickup Time : Available by 5 pm",
                         "Petaling Jaya",
                         R.drawable.bread,
-                        null
+                        null,
+                        "Sample User" // Add owner username for sample data
                     ));
                 }
             });
+    }
+
+    public void deleteDonationItem(String documentId, OnDeleteCompleteListener listener) {
+        if (documentId == null) {
+            System.err.println("Cannot delete item: document ID is null");
+            if (listener != null) {
+                listener.onDeleteFailure(new Exception("Document ID is null"));
+            }
+            return;
+        }
+
+        System.out.println("Attempting to delete document with ID: " + documentId);
+        
+        db.collection(COLLECTION_NAME)
+            .document(documentId)
+            .delete()
+            .addOnSuccessListener(aVoid -> {
+                System.out.println("Successfully deleted document: " + documentId);
+                if (listener != null) {
+                    listener.onDeleteSuccess();
+                }
+            })
+            .addOnFailureListener(e -> {
+                System.err.println("Failed to delete document: " + documentId + ", error: " + e.getMessage());
+                if (listener != null) {
+                    listener.onDeleteFailure(e);
+                }
+            });
+    }
+
+    public interface OnDeleteCompleteListener {
+        void onDeleteSuccess();
+        void onDeleteFailure(Exception e);
+    }
+
+    public void updateDonationStatus(String documentId, String status, OnStatusUpdateListener listener) {
+        if (documentId == null) {
+            if (listener != null) {
+                listener.onUpdateFailure(new Exception("Document ID is null"));
+            }
+            return;
+        }
+
+        db.collection(COLLECTION_NAME)
+            .document(documentId)
+            .update("status", status)
+            .addOnSuccessListener(aVoid -> {
+                if (listener != null) {
+                    listener.onUpdateSuccess();
+                }
+            })
+            .addOnFailureListener(e -> {
+                if (listener != null) {
+                    listener.onUpdateFailure(e);
+                }
+            });
+    }
+
+    public interface OnStatusUpdateListener {
+        void onUpdateSuccess();
+        void onUpdateFailure(Exception e);
     }
 } 

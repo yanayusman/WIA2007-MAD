@@ -48,6 +48,15 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <TextView
+                android:id="@+id/detail_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"/>
+
             <ImageView
                 android:id="@+id/detail_item_image"
                 android:layout_width="match_parent"
@@ -55,20 +64,51 @@
                 android:scaleType="centerCrop"
                 android:layout_marginBottom="16dp"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/owner_profile_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/default_profile_image"
+                    android:scaleType="centerCrop"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/detail_item_owner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/detail_item_name"
+                android:id="@+id/detail_item_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp"/>
+                android:textColor="@android:color/holo_green_dark"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/detail_item_foodCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/detail_item_created_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
                 android:layout_marginBottom="16dp"/>
 
             <View
@@ -111,7 +151,36 @@
                     android:textSize="16sp"
                     android:drawableStart="@drawable/ic_location"
                     android:drawablePadding="8dp"/>
+
+                <TextView
+                    android:id="@+id/detail_item_owner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp"/>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/completeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mark as Complete"
+                android:textColor="@color/white"
+                android:backgroundTint="#4CAF50"
+                android:visibility="gone"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"/>
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete Donation"
+                android:textColor="@color/white"
+                android:backgroundTint="#FF0000"
+                android:visibility="gone"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"/>
 
             <Button
                 android:id="@+id/requestButton"

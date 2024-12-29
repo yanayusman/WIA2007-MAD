@@ -28,6 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import android.widget.ProgressBar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class DonateItemFragment extends Fragment {
     private EditText nameInput;
@@ -176,6 +178,10 @@ public class DonateItemFragment extends Fragment {
 
     private void saveDonationWithImage(String imageUrl) {
         try {
+            // Get current user
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String username = currentUser != null ? currentUser.getDisplayName() : "Anonymous";
+
             // Format the data
             String name = nameInput.getText().toString().trim();
             String foodCategory = foodCategoryInput.getText().toString().trim();
@@ -184,7 +190,7 @@ public class DonateItemFragment extends Fragment {
             String pickupTime = pickupTimeInput.getText().toString().trim();
             String location = locationInput.getText().toString().trim();
 
-            // Create new DonationItem with image URL
+            // Create new DonationItem with owner username
             DonationItem newDonation = new DonationItem(
                 name,
                 foodCategory,
@@ -193,7 +199,8 @@ public class DonateItemFragment extends Fragment {
                 pickupTime,
                 location,
                 R.drawable.placeholder_image,
-                imageUrl
+                imageUrl,
+                username
             );
 
             // Add to Firebase
