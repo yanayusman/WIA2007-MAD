@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bumptech.glide.Glide;
+
 public class HomeFragment extends Fragment {
 
     private Toolbar toolbar;
@@ -162,12 +164,23 @@ public class HomeFragment extends Fragment {
         TextView itemPickupTime = itemView.findViewById(R.id.item_pickupTime);
         TextView itemDistance = itemView.findViewById(R.id.item_distance);
 
-        itemImage.setImageResource(item.getImageResourceId());
+        // Load image using Glide
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Glide.with(this)
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image)
+                .centerCrop()
+                .into(itemImage);
+        } else {
+            itemImage.setImageResource(item.getImageResourceId());
+        }
+
         itemName.setText(item.getName());
-        itemFoodCategory.setText("Food Category: " + (item.getFoodCategory() != null ? item.getFoodCategory() : "N/A"));
-        itemExpiredDate.setText("Expires: " + (item.getExpiredDate() != null ? item.getExpiredDate() : "N/A"));
-        itemQuantity.setText("Quantity: " + (item.getQuantity() != null ? item.getQuantity() : "N/A"));
-        itemPickupTime.setText("Pickup Time: " + (item.getPickupTime() != null ? item.getPickupTime() : "N/A"));
+        itemFoodCategory.setText(item.getFoodCategory());
+        itemExpiredDate.setText(item.getExpiredDate());
+        itemQuantity.setText(item.getQuantity());
+        itemPickupTime.setText(item.getPickupTime());
         itemDistance.setText(item.getLocation());
 
         itemView.setOnClickListener(v -> {

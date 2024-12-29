@@ -10,9 +10,10 @@ public class DonationItem implements Serializable {
     private String pickupTime;
     private String location;
     private int imageResourceId;
+    private String imageUrl;
 
     // Constructor
-    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String location, int imageResourceId) {
+    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String location, int imageResourceId, String imageUrl) {
         this.name = name;
         this.foodCategory = foodCategory;
         this.expiredDate = expiredDate;
@@ -20,6 +21,7 @@ public class DonationItem implements Serializable {
         this.pickupTime = pickupTime;
         this.location = location;
         this.imageResourceId = imageResourceId;
+        this.imageUrl = imageUrl;
     }
 
     // Getter methods
@@ -49,5 +51,9 @@ public class DonationItem implements Serializable {
 
     public int getImageResourceId() {
         return imageResourceId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

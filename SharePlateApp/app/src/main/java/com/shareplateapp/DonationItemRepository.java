@@ -27,15 +27,40 @@ public class DonationItemRepository {
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 List<DonationItem> items = new ArrayList<>();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                    String name = document.getString("name");
-                    String foodCategory = document.getString("foodCategory");
-                    String expiredDate = document.getString("expiredDate");
-                    String quantity = document.getString("quantity");
-                    String pickupTime = document.getString("pickupTime");
-                    String location = document.getString("location");
-                    int imageResourceId = document.getLong("imageResourceID").intValue();
+                    try {
+                        String name = document.getString("name");
+                        String foodCategory = document.getString("foodCategory");
+                        String expiredDate = document.getString("expiredDate");
+                        String quantity = document.getString("quantity");
+                        String pickupTime = document.getString("pickupTime");
+                        String location = document.getString("location");
+                        
+                        // Handle potential null values for imageResourceId
+                        int imageResourceId = R.drawable.placeholder_image; // Default value
+                        Long resourceIdLong = document.getLong("imageResourceID");
+                        if (resourceIdLong != null) {
+                            imageResourceId = resourceIdLong.intValue();
+                        }
+                        
+                        String imageUrl = document.getString("imageUrl");
                     
-                    items.add(new DonationItem(name, foodCategory, expiredDate, quantity, pickupTime, location, imageResourceId));
+                        // Only add if required fields are present
+                        if (name != null && !name.isEmpty()) {
+                            items.add(new DonationItem(
+                                name,
+                                foodCategory != null ? foodCategory : "",
+                                expiredDate != null ? expiredDate : "",
+                                quantity != null ? quantity : "",
+                                pickupTime != null ? pickupTime : "",
+                                location != null ? location : "",
+                                imageResourceId,
+                                imageUrl
+                            ));
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error parsing document: " + e.getMessage());
+                        // Continue to next document
+                    }
                 }
                 listener.onDonationItemsLoaded(items);
             })
@@ -44,20 +69,32 @@ public class DonationItemRepository {
 
     public void addDonationItem(DonationItem item) {
         Map<String, Object> donationData = new HashMap<>();
-        donationData.put("name", item.getName());
-        donationData.put("foodCategory", item.getFoodCategory());
-        donationData.put("expiredDate", item.getExpiredDate());
-        donationData.put("quantity", item.getQuantity());
-        donationData.put("pickupTime", item.getPickupTime());
-        donationData.put("location", item.getLocation());
-        donationData.put("imageResourceID", item.getImageResourceId());
+        try {
+            donationData.put("name", item.getName());
+            donationData.put("foodCategory", item.getFoodCategory());
+            donationData.put("expiredDate", item.getExpiredDate());
+            donationData.put("quantity", item.getQuantity());
+            donationData.put("pickupTime", item.getPickupTime());
+            donationData.put("location", item.getLocation());
+            donationData.put("imageResourceID", item.getImageResourceId());
+            donationData.put("imageUrl", item.getImageUrl());
 
-        db.collection(COLLECTION_NAME)
-            .add(donationData)
-            .addOnSuccessListener(documentReference ->
-                System.out.println("Document added with ID: " + documentReference.getId()))
-            .addOnFailureListener(e ->
-                System.err.println("Error adding document: " + e));
+            // Log the image URL for debugging
+            System.out.println("Saving donation with image URL: " + item.getImageUrl());
+
+            db.collection(COLLECTION_NAME)
+                .add(donationData)
+                .addOnSuccessListener(documentReference -> {
+                    System.out.println("Document added with ID: " + documentReference.getId());
+                    System.out.println("Successfully saved donation with image URL: " + item.getImageUrl());
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error adding document: " + e);
+                    System.err.println("Failed to save donation with image URL: " + item.getImageUrl());
+                });
+        } catch (Exception e) {
+            System.err.println("Error creating donation data: " + e);
+        }
     }
 
     public void populateInitialData() {
@@ -70,11 +107,12 @@ public class DonationItemRepository {
                     addDonationItem(new DonationItem(
                         "(sample) Fresh Bread",
                         "Food Item : Bread",
-                            "Expires : Nov 29",
-                            "5",
-                            "Pickup Time : Available by 5 pm",
+                        "Expires : Nov 29",
+                        "5",
+                        "Pickup Time : Available by 5 pm",
                         "Petaling Jaya",
-                        R.drawable.bread
+                        R.drawable.bread,
+                        null
                     ));
                 }
             });

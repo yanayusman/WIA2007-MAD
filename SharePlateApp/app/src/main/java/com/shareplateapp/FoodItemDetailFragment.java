@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+
 public class FoodItemDetailFragment extends Fragment {
     private static final String ARG_FOOD_ITEM = "food_item";
     
@@ -53,7 +55,18 @@ public class FoodItemDetailFragment extends Fragment {
         if (getArguments() != null) {
             DonationItem item = (DonationItem) getArguments().getSerializable(ARG_FOOD_ITEM);
             if (item != null) {
-                itemImage.setImageResource(item.getImageResourceId());
+                // Load image using Glide
+                if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+                    Glide.with(this)
+                        .load(item.getImageUrl())
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.placeholder_image)
+                        .centerCrop()
+                        .into(itemImage);
+                } else {
+                    itemImage.setImageResource(item.getImageResourceId());
+                }
+
                 itemName.setText(item.getName());
                 itemFoodCategory.setText("Food Category: " + (item.getFoodCategory() != null ? item.getFoodCategory() : "N/A"));
                 itemExpiredDate.setText("Expires: " + (item.getExpiredDate() != null ? item.getExpiredDate() : "N/A"));
