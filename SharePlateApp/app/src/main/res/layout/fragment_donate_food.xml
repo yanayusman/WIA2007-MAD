@@ -32,7 +32,7 @@
                 android:text="Donate Food"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/poppins_bold"/>
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="24dp">
 
                 <ImageView
                     android:id="@+id/food_image"
@@ -61,15 +61,19 @@
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder_image"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="16dp"/>
 
                 <Button
                     android:id="@+id/upload_image_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Upload Image"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/button_green"
+                    android:fontFamily="@font/poppins"
                     android:drawableStart="@drawable/ic_camera"
-                    android:drawablePadding="8dp"/>
+                    android:drawablePadding="8dp"
+                    android:padding="12dp"/>
 
             </LinearLayout>
 
@@ -77,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/DonateInputLayout">
 
                 <EditText
                     android:id="@+id/name_input"
@@ -85,14 +89,15 @@
                     android:layout_height="wrap_content"
                     android:hint="Food Name"
                     android:inputType="text"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/DonateInputLayout">
 
                 <EditText
                     android:id="@+id/food_category_input"
@@ -100,14 +105,15 @@
                     android:layout_height="wrap_content"
                     android:hint="Food Category"
                     android:inputType="text"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/DonateInputLayout"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_calendar">
 
@@ -119,14 +125,15 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/DonateInputLayout">
 
                 <EditText
                     android:id="@+id/quantity_input"
@@ -134,14 +141,15 @@
                     android:layout_height="wrap_content"
                     android:hint="Quantity"
                     android:inputType="number"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/DonateInputLayout"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_time">
 
@@ -153,14 +161,15 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                style="@style/DonateInputLayout">
 
                 <EditText
                     android:id="@+id/location_input"
@@ -168,7 +177,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Location"
                     android:inputType="text"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <ProgressBar
@@ -185,7 +195,9 @@
                 android:text="Submit Donation"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/button_green"
-                android:padding="12dp"/>
+                android:fontFamily="@font/poppins"
+                android:padding="16dp"
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
 
