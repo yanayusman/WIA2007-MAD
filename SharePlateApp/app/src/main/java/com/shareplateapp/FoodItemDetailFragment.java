@@ -51,6 +51,20 @@ public class FoodItemDetailFragment extends Fragment {
         TextView itemPickupTime = view.findViewById(R.id.detail_item_pickupTime);
         TextView itemLocation = view.findViewById(R.id.detail_item_location); // Make sure this ID exists in your layout
 
+        // Add click listener to the image
+        itemImage.setOnClickListener(v -> {
+            DonationItem item = (DonationItem) getArguments().getSerializable(ARG_FOOD_ITEM);
+            if (item != null) {
+                FullScreenImageFragment fullScreenFragment = 
+                    FullScreenImageFragment.newInstance(item.getImageUrl(), item.getImageResourceId());
+                requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fullScreenFragment)
+                    .addToBackStack(null)
+                    .commit();
+            }
+        });
+
         // Get the DonationItem from arguments
         if (getArguments() != null) {
             DonationItem item = (DonationItem) getArguments().getSerializable(ARG_FOOD_ITEM);
