@@ -308,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/settings/baseline_settings_24.xml" />
+                                      <entry key="url" value="file:/$PROJECT_DIR$/../../../U%20S%20E%20R/AppData/Local/Android/Sdk/icons/material/materialicons/edit/baseline_edit_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -318,7 +318,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_settings" />
+                            <entry key="outputName" value="baseline_edit_24" />
                             <entry key="sourceFile" value="C:\Users\Shaurah Sasha\AndroidStudioProjects\WIA2007-MAD" />
                           </map>
                         </option>
