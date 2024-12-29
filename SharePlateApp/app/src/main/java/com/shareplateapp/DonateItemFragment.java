@@ -177,50 +177,58 @@ public class DonateItemFragment extends Fragment {
     }
 
     private void saveDonationWithImage(String imageUrl) {
-        try {
-            // Get current user
-            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            String username = currentUser != null ? currentUser.getDisplayName() : "Anonymous";
+        String name = nameInput.getText().toString();
+        String foodCategory = foodCategoryInput.getText().toString();
+        String expiredDate = expiryDateInput.getText().toString();
+        String quantity = quantityInput.getText().toString();
+        String pickupTime = pickupTimeInput.getText().toString();
+        String location = locationInput.getText().toString();
 
-            // Format the data
-            String name = nameInput.getText().toString().trim();
-            String foodCategory = foodCategoryInput.getText().toString().trim();
-            String expiryDate = expiryDateInput.getText().toString().trim();
-            String quantity = quantityInput.getText().toString().trim();
-            String pickupTime = pickupTimeInput.getText().toString().trim();
-            String location = locationInput.getText().toString().trim();
-
-            // Create new DonationItem with owner username
-            DonationItem newDonation = new DonationItem(
-                name,
-                foodCategory,
-                expiryDate,
-                quantity,
-                pickupTime,
-                location,
-                R.drawable.placeholder_image,
-                imageUrl,
-                username
-            );
-
-            // Add to Firebase
-            donationItemRepository.addDonationItem(newDonation);
-
-            // Show success message and navigate back
-            if (getContext() != null) {
-                Toast.makeText(getContext(), "Donation submitted successfully!", 
-                    Toast.LENGTH_SHORT).show();
-            }
-            if (getActivity() != null) {
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
-        } catch (Exception e) {
-            if (getContext() != null) {
-                Toast.makeText(getContext(), 
-                    "Error saving donation: " + e.getMessage(), 
-                    Toast.LENGTH_SHORT).show();
-            }
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "You must be logged in to donate", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        String ownerUsername = currentUser.getDisplayName();
+        String ownerProfileImageUrl = currentUser.getPhotoUrl() != null ? 
+            currentUser.getPhotoUrl().toString() : "";
+
+        // Create new donation with all fields including profile image URL
+        DonationItem newDonation = new DonationItem(
+            name,
+            foodCategory,
+            expiredDate,
+            quantity,
+            pickupTime,
+            location,
+            R.drawable.placeholder_image, // Default placeholder
+            imageUrl,
+            ownerUsername,
+            ownerProfileImageUrl  // Add the profile image URL
+        );
+
+        // Save to repository
+        DonationItemRepository repository = new DonationItemRepository();
+        repository.addDonationItem(newDonation, new DonationItemRepository.OnDonationCompleteListener() {
+            @Override
+            public void onDonationSuccess() {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Donation added successfully", Toast.LENGTH_SHORT).show();
+                    // Clear form or navigate back
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+
+            @Override
+            public void onDonationFailure(Exception e) {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), 
+                        "Failed to add donation: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private boolean validateInputs() {

@@ -1,16 +1,28 @@
 package com.shareplateapp;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import android.util.Log;
 
 public class DonationItemRepository {
+    private static final String TAG = "DonationItemRepository";
     private static final String COLLECTION_NAME = "allDonationItems";
     private final FirebaseFirestore db;
+
+    // Define the interface for callbacks
+    public interface OnDonationCompleteListener {
+        void onDonationSuccess();
+        void onDonationFailure(Exception e);
+    }
 
     public DonationItemRepository() {
         this.db = FirebaseFirestore.getInstance();
@@ -36,6 +48,7 @@ public class DonationItemRepository {
                         String location = document.getString("location");
                         String ownerUsername = document.getString("ownerUsername");
                         String status = document.getString("status");
+                        String ownerProfileImageUrl = document.getString("ownerProfileImageUrl");
                         
                         int imageResourceId = R.drawable.placeholder_image;
                         Long resourceIdLong = document.getLong("imageResourceID");
@@ -57,7 +70,8 @@ public class DonationItemRepository {
                                 location != null ? location : "",
                                 imageResourceId,
                                 imageUrl,
-                                ownerUsername != null ? ownerUsername : "Anonymous"
+                                ownerUsername != null ? ownerUsername : "Anonymous",
+                                ownerProfileImageUrl != null ? ownerProfileImageUrl : ""
                             );
                             // Set the document ID and status
                             item.setDocumentId(document.getId());
@@ -76,36 +90,39 @@ public class DonationItemRepository {
             .addOnFailureListener(listener::onError);
     }
 
-    public void addDonationItem(DonationItem item) {
-        Map<String, Object> donationData = new HashMap<>();
-        try {
-            donationData.put("name", item.getName());
-            donationData.put("foodCategory", item.getFoodCategory());
-            donationData.put("expiredDate", item.getExpiredDate());
-            donationData.put("quantity", item.getQuantity());
-            donationData.put("pickupTime", item.getPickupTime());
-            donationData.put("location", item.getLocation());
-            donationData.put("imageResourceID", item.getImageResourceId());
-            donationData.put("imageUrl", item.getImageUrl());
-            donationData.put("ownerUsername", item.getOwnerUsername());
-            donationData.put("status", item.getStatus());
-            donationData.put("createdAt", System.currentTimeMillis());
+    public void addDonationItem(DonationItem item, OnDonationCompleteListener listener) {
+        // Get current user
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String ownerUsername = currentUser != null ? currentUser.getDisplayName() : "Anonymous";
+        String ownerProfileImageUrl = currentUser != null && currentUser.getPhotoUrl() != null ? 
+            currentUser.getPhotoUrl().toString() : "";
 
-            db.collection(COLLECTION_NAME)
-                .add(donationData)
-                .addOnSuccessListener(documentReference -> {
-                    String docId = documentReference.getId();
-                    // Set the document ID in the item
-                    item.setDocumentId(docId);
-                    // No need to update the document with its ID since we can use the Firestore ID
-                    System.out.println("Document added with ID: " + docId);
-                })
-                .addOnFailureListener(e -> {
-                    System.err.println("Error adding document: " + e);
-                });
-        } catch (Exception e) {
-            System.err.println("Error creating donation data: " + e);
-        }
+        // Create donation data map
+        Map<String, Object> donationData = new HashMap<>();
+        donationData.put("name", item.getName());
+        donationData.put("foodCategory", item.getFoodCategory());
+        donationData.put("expiredDate", item.getExpiredDate());
+        donationData.put("quantity", item.getQuantity());
+        donationData.put("pickupTime", item.getPickupTime());
+        donationData.put("location", item.getLocation());
+        donationData.put("imageResourceId", item.getImageResourceId());
+        donationData.put("imageUrl", item.getImageUrl());
+        donationData.put("ownerUsername", ownerUsername);
+        donationData.put("ownerProfileImageUrl", ownerProfileImageUrl);
+        donationData.put("status", "active");
+        donationData.put("createdAt", System.currentTimeMillis());
+
+        // Add to Firestore
+        db.collection(COLLECTION_NAME)
+            .add(donationData)
+            .addOnSuccessListener(documentReference -> {
+                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                listener.onDonationSuccess();
+            })
+            .addOnFailureListener(e -> {
+                Log.w(TAG, "Error adding document", e);
+                listener.onDonationFailure(e);
+            });
     }
 
     public void populateInitialData() {
@@ -114,7 +131,11 @@ public class DonationItemRepository {
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 if (queryDocumentSnapshots.isEmpty()) {
-                    // Add sample data with owner username
+                    // Add sample data with owner username and profile image
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String ownerProfileImageUrl = currentUser != null && currentUser.getPhotoUrl() != null ? 
+                        currentUser.getPhotoUrl().toString() : "";
+
                     addDonationItem(new DonationItem(
                         "(sample) Fresh Bread",
                         "Food Item : Bread",
@@ -124,8 +145,19 @@ public class DonationItemRepository {
                         "Petaling Jaya",
                         R.drawable.bread,
                         null,
-                        "Sample User" // Add owner username for sample data
-                    ));
+                        "Sample User",
+                        ownerProfileImageUrl
+                    ), new OnDonationCompleteListener() {
+                        @Override
+                        public void onDonationSuccess() {
+                            // No need to handle success
+                        }
+
+                        @Override
+                        public void onDonationFailure(Exception e) {
+                            System.err.println("Error adding sample data: " + e.getMessage());
+                        }
+                    });
                 }
             });
     }
@@ -189,5 +221,81 @@ public class DonationItemRepository {
     public interface OnStatusUpdateListener {
         void onUpdateSuccess();
         void onUpdateFailure(Exception e);
+    }
+
+    public void createDonation(DonationItem item) {
+        try {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) return;
+
+            // Get profile image URL from Firebase Auth first
+            String profileImageUrl = currentUser.getPhotoUrl() != null ? 
+                currentUser.getPhotoUrl().toString() : "";
+            
+            // Set the owner's profile image URL
+            item.setOwnerProfileImageUrl(profileImageUrl);
+            
+            // Create donation data map
+            Map<String, Object> donationData = new HashMap<>();
+            donationData.put("name", item.getName());
+            donationData.put("foodCategory", item.getFoodCategory());
+            donationData.put("expiredDate", item.getExpiredDate());
+            donationData.put("quantity", item.getQuantity());
+            donationData.put("pickupTime", item.getPickupTime());
+            donationData.put("location", item.getLocation());
+            donationData.put("imageResourceId", item.getImageResourceId());
+            donationData.put("imageUrl", item.getImageUrl());
+            donationData.put("ownerUsername", item.getOwnerUsername());
+            donationData.put("ownerProfileImageUrl", profileImageUrl);
+            donationData.put("status", "active");
+            donationData.put("createdAt", System.currentTimeMillis());
+
+            // Add to Firestore
+            db.collection(COLLECTION_NAME)
+                .add(donationData)
+                .addOnSuccessListener(documentReference -> {
+                    String docId = documentReference.getId();
+                    item.setDocumentId(docId);
+                    System.out.println("Document added with ID: " + docId);
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error adding document: " + e);
+                });
+
+        } catch (Exception e) {
+            System.err.println("Error creating donation data: " + e);
+        }
+    }
+
+    public void addMockData() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String ownerUsername = currentUser != null ? currentUser.getDisplayName() : "Anonymous";
+        String ownerProfileImageUrl = currentUser != null && currentUser.getPhotoUrl() != null ? 
+            currentUser.getPhotoUrl().toString() : "";
+
+        DonationItem item = new DonationItem(
+            "Mock Food Item",
+            "Groceries",
+            "Dec 31, 2024",
+            "2 packs",
+            "2:00 PM",
+            "123 Street",
+            R.drawable.placeholder_image,
+            null,
+            ownerUsername,
+            ownerProfileImageUrl
+        );
+
+        addDonationItem(item, new OnDonationCompleteListener() {
+            @Override
+            public void onDonationSuccess() {
+                Log.d(TAG, "Mock data added successfully");
+            }
+
+            @Override
+            public void onDonationFailure(Exception e) {
+                Log.e(TAG, "Failed to add mock data", e);
+            }
+        });
     }
 } 
