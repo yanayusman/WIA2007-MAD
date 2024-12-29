@@ -1,38 +1,51 @@
 package com.shareplateapp;
 
-public abstract class Event {
+import java.io.Serializable;
+public class Event implements Serializable {
 
-    private final String title;
+    private String name, desc, date, time, typeOfEvents, seatAvailable, location;
 
-    private final String description;
-    private final String location;
-    private final String date; // maybe we can change this datatype from "String" to "Date"
     private final int imageResourceId;
 
-    public Event(String title, String desc, String loc, String date, int image){
+    public Event(String name, String desc, String date, String time, String typeOfEvents, String seatAvailable, String location, int img){
 
-        description = desc;
-        location = loc;
+        this.name = name;
+        this.desc = desc;
         this.date = date;
-        this.title = title;
-        imageResourceId = image;
+        this.time = time;
+        this.typeOfEvents = typeOfEvents;
+        this.seatAvailable = seatAvailable;
+        this.location = location;
+        this.imageResourceId = img;
 
+    }
+
+    public String getName(){
+        return name;
     }
 
     public String getDescription(){
-        return description;
-    }
-
-    public String getLocation(){
-        return location;
+        return desc;
     }
 
     public String getDate(){
         return date;
     }
 
-    public String getTitle(){
-        return title;
+    public String getTime(){
+        return time;
+    }
+
+    public String getTypeOfEvents(){
+        return typeOfEvents;
+    }
+
+    public String getSeatAvailable(){
+        return seatAvailable;
+    }
+
+    public String getLocation(){
+        return location;
     }
 
     public int getImageResourceId(){
