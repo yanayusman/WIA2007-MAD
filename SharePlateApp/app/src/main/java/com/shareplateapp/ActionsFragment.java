@@ -72,6 +72,7 @@ public class ActionsFragment extends Fragment {
 
         // Find the Give Away Food button
         Button giveAwayFoodButton = view.findViewById(R.id.give_away_food_button);
+        Button giveAwayNonFoodButton = view.findViewById(R.id.give_away_non_food_button);
         
         // Set click listener
         giveAwayFoodButton.setOnClickListener(v -> {
@@ -81,6 +82,15 @@ public class ActionsFragment extends Fragment {
                 .replace(R.id.fragment_container, new DonateItemFragment())
                 .addToBackStack(null)
                 .commit();
+        });
+
+        giveAwayNonFoodButton.setOnClickListener(v -> {
+            // Navigate to DonateNonFoodFragment
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new DonateNonFoodFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 }
