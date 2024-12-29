@@ -30,6 +30,18 @@ import java.util.Locale;
 import android.widget.ProgressBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import android.os.Environment;
+import java.io.File;
+import java.io.IOException;
+import androidx.core.content.FileProvider;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import android.app.AlertDialog;
 
 public class DonateItemFragment extends Fragment {
     protected EditText nameInput;
@@ -51,6 +63,9 @@ public class DonateItemFragment extends Fragment {
     private FirebaseStorage storage;
     protected StorageReference storageRef;
     protected ProgressBar progressBar;
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private Uri photoUri;
+    private static final int CAMERA_PERMISSION_REQUEST = 100;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +90,23 @@ public class DonateItemFragment extends Fragment {
                         .load(selectedImageUri)
                         .centerCrop()
                         .into(foodImageView);
+                }
+            }
+        );
+
+        // Initialize camera launcher
+        cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (photoUri != null) {
+                        selectedImageUri = photoUri;
+                        // Show selected image
+                        Glide.with(this)
+                            .load(photoUri)
+                            .centerCrop()
+                            .into(foodImageView);
+                    }
                 }
             }
         );
@@ -119,7 +151,7 @@ public class DonateItemFragment extends Fragment {
         foodImageView = view.findViewById(R.id.food_image);
         Button uploadImageButton = view.findViewById(R.id.upload_image_button);
 
-        uploadImageButton.setOnClickListener(v -> openImagePicker());
+        uploadImageButton.setOnClickListener(v -> showImageSourceDialog());
     }
 
     protected void submitDonation() {
@@ -309,5 +341,83 @@ public class DonateItemFragment extends Fragment {
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
+    }
+
+    private void showImageSourceDialog() {
+        String[] options = {"Take Photo", "Choose from Gallery"};
+        
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Select Image Source")
+            .setItems(options, (dialog, which) -> {
+                if (which == 0) {
+                    // Take photo with camera
+                    if (checkCameraPermission()) {
+                        openCamera();
+                    } else {
+                        requestCameraPermission();
+                    }
+                } else {
+                    // Choose from gallery
+                    openImagePicker();
+                }
+            })
+            .show();
+    }
+
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(requireContext(), 
+            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+            new String[]{Manifest.permission.CAMERA},
+            CAMERA_PERMISSION_REQUEST);
+    }
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Toast.makeText(getContext(), 
+                    "Error creating image file", Toast.LENGTH_SHORT).show();
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(requireContext(),
+                    "com.shareplateapp.fileprovider",
+                    photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                cameraLauncher.launch(takePictureIntent);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(
+            imageFileName,  /* prefix */
+            ".jpg",        /* suffix */
+            storageDir     /* directory */
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
+            @NonNull int[] grantResults) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(getContext(), 
+                    "Camera permission is required to take photos", 
+                    Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 } 
