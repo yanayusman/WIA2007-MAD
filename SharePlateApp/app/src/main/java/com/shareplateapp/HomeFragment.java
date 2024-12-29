@@ -148,6 +148,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDonationItemsLoaded(List<DonationItem> items) {
                 allDonationItems = items;
+                // Sort items by creation date (newest first) before adding to grid
+                Collections.sort(allDonationItems, (a, b) -> 
+                    Long.compare(b.getCreatedAt(), a.getCreatedAt()));
+                
                 // Clear existing views
                 donationGrid.removeAllViews();
                 // Add loaded items to the grid
@@ -228,7 +232,12 @@ public class HomeFragment extends Fragment {
         donationGrid.removeAllViews();
 
         if (query.isEmpty()) {
-            for (DonationItem item : allDonationItems) {
+            // Maintain sort order when showing all items
+            List<DonationItem> sortedItems = new ArrayList<>(allDonationItems);
+            Collections.sort(sortedItems, (a, b) -> 
+                Long.compare(b.getCreatedAt(), a.getCreatedAt()));
+            
+            for (DonationItem item : sortedItems) {
                 addDonationItemView(item);
             }
         } else {
@@ -240,6 +249,7 @@ public class HomeFragment extends Fragment {
                                     item.getExpiredDate().toLowerCase().contains(lowercaseQuery) ||
                                     String.valueOf(item.getQuantity()).contains(lowercaseQuery) ||
                                     item.getPickupTime().toLowerCase().contains(lowercaseQuery))
+                    .sorted((a, b) -> Long.compare(b.getCreatedAt(), a.getCreatedAt()))  // Sort filtered results
                     .collect(Collectors.toList());
 
             for (DonationItem item : filteredItems) {
