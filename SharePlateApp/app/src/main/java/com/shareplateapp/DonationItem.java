@@ -1,4 +1,4 @@
-package com.shareplateapp;
+package com.example.shareplate;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -6,19 +6,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DonationItem implements Serializable {
-    private String name;
-    private String foodCategory;
-    private String expiredDate;
-    private String quantity;
-    private String pickupTime;
-    private String location;
+    private String name,foodCategory, expiredDate, quantity, pickupTime, location, imageUrl, ownerUsername, documentId, status, ownerProfileImageUrl;
     private int imageResourceId;
-    private String imageUrl;
-    private String ownerUsername;
-    private String documentId;
-    private String status; // "active" or "completed"
     private long createdAt;
-    private String ownerProfileImageUrl;
 
     // Constructor
     public DonationItem() {
