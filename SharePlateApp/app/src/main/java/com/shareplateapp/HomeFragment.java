@@ -175,13 +175,23 @@ public class HomeFragment extends Fragment {
         View itemView = getLayoutInflater().inflate(R.layout.donation_item_view, donationGrid, false);
 
         ImageView itemImage = itemView.findViewById(R.id.item_image);
-//        ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
         TextView itemName = itemView.findViewById(R.id.item_name);
         TextView itemFoodCategory = itemView.findViewById(R.id.item_foodCategory);
         TextView itemExpiredDate = itemView.findViewById(R.id.item_expiredDate);
         TextView itemQuantity = itemView.findViewById(R.id.item_quantity);
         TextView itemPickupTime = itemView.findViewById(R.id.item_pickupTime);
         TextView itemDistance = itemView.findViewById(R.id.item_distance);
+        TextView statusIndicator = itemView.findViewById(R.id.status_indicator);
+
+        // Show status indicator if item is completed
+        if (item.getStatus() != null && item.getStatus().equals("completed")) {
+            statusIndicator.setVisibility(View.VISIBLE);
+            // Optional: Add some visual dimming to the entire card
+            itemView.setAlpha(0.8f);
+        } else {
+            statusIndicator.setVisibility(View.GONE);
+            itemView.setAlpha(1.0f);
+        }
 
         // Load image using Glide
         if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
