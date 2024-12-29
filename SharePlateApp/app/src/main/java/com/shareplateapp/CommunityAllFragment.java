@@ -8,15 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.chip.Chip;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,31 +38,32 @@ public class CommunityAllFragment extends Fragment {
     private LinearLayout searchLayout;
     private ImageView backArrow;
     private View normalToolbarContent;
+    private EventRepo eventRepo;
+    private List<Event> volunteeringEvents = new ArrayList<>();
+    private List<Event> campaignEvents = new ArrayList<>();
+
+    private Chip allEventsButton, volunteeringButton, campaignsButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_community_all, container, false);
 
-        // Initialize all views first
+        eventRepo = new EventRepo();
+        fetchEventsFromDatabase();
+
+        // Initialize views
         toolbar = view.findViewById(R.id.toolbar2);
         searchIcon = view.findViewById(R.id.search_icon2);
         menuIcon = view.findViewById(R.id.menu_icon2);
+        allEventsButton = view.findViewById(R.id.allEventsButton);
+        volunteeringButton = view.findViewById(R.id.volunteeringButton);
+        campaignsButton = view.findViewById(R.id.campaignsButton);
         eventGrid = view.findViewById(R.id.event_grid);
         searchEditText = view.findViewById(R.id.search_edit_text2);
         searchLayout = view.findViewById(R.id.search_layout2);
         backArrow = view.findViewById(R.id.back_arrow2);
         normalToolbarContent = view.findViewById(R.id.normal_toolbar_content2);
-
-        // Initialize donation items list
-        allEvents = new ArrayList<>();
-
-        // Add sample data (move this to a separate method if you fetch from a database/API)
-        allEvents.add(new Campaign("Campaign for Zero Hunger", "Support SDG 2: Zero Hunger by attending this awareness event. Activities include food sharing, talks, and more.", "KLCC Park", "Dec 18, 2024", R.drawable.bread));
-        allEvents.add(new Volunteering("Food Distribution Drive", "Help distribute surplus food to underprivileged families. Volunteers are needed for sorting, packaging, and handing out food items.", "Community Center, Jalan Semarak", "Dec 10, 2024", R.drawable.pizza, 4, 20));
-        allEvents.add(new Campaign("Cooking Workshop: Meals from Surplus Food", "Learn how to create delicious meals from surplus ingredients. Free for all participants!", "Sustainable Kitchen, TTDI", "Dec 15, 2024", R.drawable.bread));
-        allEvents.add(new Volunteering("Educational Workshop Volunteer", "Support facilitators in teaching kids about food security and sustainable practices. No prior experience required.", "SK Taman Melati", "Jan 5, 2025", R.drawable.pizza, 4, 25));
 
 
         // Set up search functionality
@@ -93,33 +100,67 @@ public class CommunityAllFragment extends Fragment {
             }
         });
 
-        // Inflate and add donation item views to the grid
-        for (Event item : allEvents) {
-            addEventsView(item);
-        }
-
+        // Initialize views
+        allEventsButton.setOnClickListener(v -> navigateToFragment(new CommunityAllFragment()));
+        volunteeringButton.setOnClickListener(v -> navigateToFragment(new CommunityVolunteeringFragment()));
+        campaignsButton.setOnClickListener(v -> navigateToFragment(new CommunityCampaignsFragment()));
         return view;
     }
 
-    private void addEventsView(Event event){
-        View itemView = getLayoutInflater().inflate(R.layout.event_item_view, eventGrid, false);
+    private void showEvents(List<Event> events) {
+        // Clear existing views
+        eventGrid.removeAllViews();
 
-        ImageView itemImage = itemView.findViewById(R.id.item_image);
-        TextView itemName = itemView.findViewById(R.id.item_name);
-        TextView itemDescription = itemView.findViewById(R.id.item_foodCategory);
-        TextView eventDate = itemView.findViewById(R.id.event_date);
-        TextView eventLocation = itemView.findViewById(R.id.event_location);
-
-        itemImage.setImageResource(event.getImageResourceId());
-        itemName.setText(event.getTitle());
-        itemDescription.setText(event.getDescription());
-        eventDate.setText(event.getDate());
-        eventLocation.setText(event.getLocation());
-
-        eventGrid.addView(itemView);
+        // Add events to the grid
+        for (Event event : events) {
+            addEventsView(event);
+        }
     }
 
-    private void filterEvents(String query){
+    private void navigateToFragment(Fragment fragment) {
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void fetchEventsFromDatabase() {
+        eventRepo.getAllEventItems(new EventRepo.OnEventItemsLoadedListener() {
+            @Override
+            public void onEventItemsLoaded(List<Event> items) {
+                allEvents = items; // Update the event list
+                eventGrid.removeAllViews(); // Clear existing views
+                for (Event event : allEvents) {
+                    addEventsView(event); // Add events to the grid
+                }
+            }
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(getContext(), "Error loading events: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addEventsView(Event event) {
+        View eventItem = getLayoutInflater().inflate(R.layout.event_item_view, eventGrid, false);
+
+        ImageView eventImg = eventItem.findViewById(R.id.item_image);
+        TextView eventName = eventItem.findViewById(R.id.item_name);
+        TextView eventDate = eventItem.findViewById(R.id.item_date);
+        TextView eventLocation = eventItem.findViewById(R.id.item_location);
+        TextView eventDesc = eventItem.findViewById(R.id.item_desc);
+
+        eventImg.setImageResource(event.getImageResourceId());
+        eventName.setText(event.getName());
+        eventDate.setText("Date : " + (event.getDate() != null ? event.getDate() : "N/A"));
+        eventLocation.setText("Location : " + (event.getLocation() != null ? event.getLocation() : "N/A"));
+        eventDesc.setText("Description : " + (event.getDescription() != null ? event.getDescription() : "N/A"));
+
+        eventGrid.addView(eventItem);
+    }
+
+    private void filterEvents(String query) {
         eventGrid.removeAllViews();
 
         if (query.isEmpty()) {
@@ -130,7 +171,9 @@ public class CommunityAllFragment extends Fragment {
             String lowercaseQuery = query.toLowerCase();
             List<Event> filteredEvents = allEvents.stream()
                     .filter(item ->
-                            item.getTitle().toLowerCase().contains(lowercaseQuery) ||
+                            item.getName().toLowerCase().contains(lowercaseQuery) ||
+                                    item.getDate().toLowerCase().contains(lowercaseQuery) ||
+                                    item.getLocation().toLowerCase().contains(lowercaseQuery) ||
                                     item.getDescription().toLowerCase().contains(lowercaseQuery))
                     .collect(Collectors.toList());
 
@@ -138,17 +181,5 @@ public class CommunityAllFragment extends Fragment {
                 addEventsView(event);
             }
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // If you need to handle View clicks or other logic, do it here
-        // Example (you'll need to adapt this to your actual logic):
-        // Button interestedButton = view.findViewById(R.id.interestedButton);
-        // interestedButton.setOnClickListener(v -> {
-        //     // Handle click
-        // });
     }
 }
