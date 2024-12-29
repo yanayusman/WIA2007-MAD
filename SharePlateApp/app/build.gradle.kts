@@ -86,4 +86,13 @@ dependencies {
 
     // SwipeRefreshLayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Add Firebase Storage
+    implementation("com.google.firebase:firebase-storage-ktx")
+    
+    // Add Glide for image loading (optional but recommended)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // LocalBroadcastManager
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
 }

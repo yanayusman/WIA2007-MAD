@@ -1,5 +1,6 @@
 package com.shareplateapp;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -10,6 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.net.Uri;
+import android.content.Intent;
+import android.provider.MediaStore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.bumptech.glide.Glide;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,21 +27,45 @@ import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import android.widget.ProgressBar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import android.os.Environment;
+import java.io.File;
+import java.io.IOException;
+import androidx.core.content.FileProvider;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import android.app.AlertDialog;
 
 public class DonateItemFragment extends Fragment {
-    private EditText nameInput;
-    private EditText foodCategoryInput;
-    private EditText expiryDateInput;
-    private EditText quantityInput;
-    private EditText pickupTimeInput;
-    private EditText locationInput;
-    private Button submitButton;
+    protected EditText nameInput;
+    protected EditText foodCategoryInput;
+    protected EditText expiryDateInput;
+    protected EditText quantityInput;
+    protected EditText pickupTimeInput;
+    protected EditText locationInput;
+    protected Button submitButton;
     private ImageView backButton;
     private DonationItemRepository donationItemRepository;
     private Calendar calendar;
     private SimpleDateFormat dateFormatter;
     private Calendar timeCalendar;
     private SimpleDateFormat timeFormatter;
+    protected ImageView foodImageView;
+    protected Uri selectedImageUri;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private FirebaseStorage storage;
+    protected StorageReference storageRef;
+    protected ProgressBar progressBar;
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private Uri photoUri;
+    private static final int CAMERA_PERMISSION_REQUEST = 100;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +75,41 @@ public class DonateItemFragment extends Fragment {
         timeCalendar = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         timeFormatter = new SimpleDateFormat("hh:mm a", Locale.US); // 12-hour format with AM/PM
+        
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        // Initialize image picker launcher
+        imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    // Show selected image
+                    Glide.with(this)
+                        .load(selectedImageUri)
+                        .centerCrop()
+                        .into(foodImageView);
+                }
+            }
+        );
+
+        // Initialize camera launcher
+        cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (photoUri != null) {
+                        selectedImageUri = photoUri;
+                        // Show selected image
+                        Glide.with(this)
+                            .load(photoUri)
+                            .centerCrop()
+                            .into(foodImageView);
+                    }
+                }
+            }
+        );
     }
 
     @Nullable
@@ -80,42 +148,123 @@ public class DonateItemFragment extends Fragment {
         locationInput = view.findViewById(R.id.location_input);
         submitButton = view.findViewById(R.id.submit_button);
         backButton = view.findViewById(R.id.back_button);
+        foodImageView = view.findViewById(R.id.food_image);
+        Button uploadImageButton = view.findViewById(R.id.upload_image_button);
+
+        uploadImageButton.setOnClickListener(v -> showImageSourceDialog());
     }
 
-    private void submitDonation() {
+    protected void submitDonation() {
         // Validate inputs
         if (!validateInputs()) {
             return;
         }
 
-        // Format the data - without prefixes
-        String name = nameInput.getText().toString().trim();
-        String foodCategory = foodCategoryInput.getText().toString().trim();
-        String expiryDate = expiryDateInput.getText().toString().trim();
-        String quantity = quantityInput.getText().toString().trim();
-        String pickupTime = pickupTimeInput.getText().toString().trim();
-        String location = locationInput.getText().toString().trim();
+        View view = getView();
+        if (view == null) {
+            Toast.makeText(getContext(), "Error: View not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Create new DonationItem
+        // Show loading indicator
+        progressBar = view.findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        submitButton.setEnabled(false);
+
+        if (selectedImageUri != null) {
+            // Upload image first
+            String imageFileName = "food_images/" + System.currentTimeMillis() + ".jpg";
+            StorageReference imageRef = storageRef.child(imageFileName);
+
+            imageRef.putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Get download URL
+                    imageRef.getDownloadUrl()
+                        .addOnSuccessListener(downloadUri -> {
+                            // Create and save donation with image URL
+                            saveDonationWithImage(downloadUri.toString());
+                            progressBar.setVisibility(View.GONE);
+                            submitButton.setEnabled(true);
+                        })
+                        .addOnFailureListener(e -> {
+                            progressBar.setVisibility(View.GONE);
+                            submitButton.setEnabled(true);
+                            Toast.makeText(getContext(), 
+                                "Failed to get image URL: " + e.getMessage(), 
+                                Toast.LENGTH_SHORT).show();
+                        });
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    submitButton.setEnabled(true);
+                    Toast.makeText(getContext(), 
+                        "Failed to upload image: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                });
+        } else {
+            // Save donation without image
+            saveDonationWithImage(null);
+            progressBar.setVisibility(View.GONE);
+            submitButton.setEnabled(true);
+        }
+    }
+
+    private void saveDonationWithImage(String imageUrl) {
+        String name = nameInput.getText().toString();
+        String foodCategory = foodCategoryInput.getText().toString();
+        String expiredDate = expiryDateInput.getText().toString();
+        String quantity = quantityInput.getText().toString();
+        String pickupTime = pickupTimeInput.getText().toString();
+        String location = locationInput.getText().toString();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "You must be logged in to donate", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String ownerUsername = currentUser.getDisplayName();
+        String ownerProfileImageUrl = currentUser.getPhotoUrl() != null ? 
+            currentUser.getPhotoUrl().toString() : "";
+
+        // Create new donation with all fields including profile image URL
         DonationItem newDonation = new DonationItem(
             name,
             foodCategory,
-            expiryDate,
+            expiredDate,
             quantity,
             pickupTime,
             location,
-            R.drawable.placeholder_image  // Default placeholder image
+            R.drawable.placeholder_image, // Default placeholder
+            imageUrl,
+            ownerUsername,
+            ownerProfileImageUrl  // Add the profile image URL
         );
 
-        // Add to Firebase
-        donationItemRepository.addDonationItem(newDonation);
+        // Save to repository
+        DonationItemRepository repository = new DonationItemRepository();
+        repository.addDonationItem(newDonation, new DonationItemRepository.OnDonationCompleteListener() {
+            @Override
+            public void onDonationSuccess() {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Donation added successfully", Toast.LENGTH_SHORT).show();
+                    // Clear form or navigate back
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
 
-        // Show success message and navigate back
-        Toast.makeText(getContext(), "Donation submitted successfully!", Toast.LENGTH_SHORT).show();
-        requireActivity().getSupportFragmentManager().popBackStack();
+            @Override
+            public void onDonationFailure(Exception e) {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), 
+                        "Failed to add donation: " + e.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    private boolean validateInputs() {
+    protected boolean validateInputs() {
         if (nameInput.getText().toString().trim().isEmpty()) {
             nameInput.setError("Name is required");
             return false;
@@ -187,5 +336,88 @@ public class DonateItemFragment extends Fragment {
 
     private void updateTimeLabel() {
         pickupTimeInput.setText(timeFormatter.format(timeCalendar.getTime()));
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
+    private void showImageSourceDialog() {
+        String[] options = {"Take Photo", "Choose from Gallery"};
+        
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Select Image Source")
+            .setItems(options, (dialog, which) -> {
+                if (which == 0) {
+                    // Take photo with camera
+                    if (checkCameraPermission()) {
+                        openCamera();
+                    } else {
+                        requestCameraPermission();
+                    }
+                } else {
+                    // Choose from gallery
+                    openImagePicker();
+                }
+            })
+            .show();
+    }
+
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(requireContext(), 
+            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+            new String[]{Manifest.permission.CAMERA},
+            CAMERA_PERMISSION_REQUEST);
+    }
+
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Toast.makeText(getContext(), 
+                    "Error creating image file", Toast.LENGTH_SHORT).show();
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(requireContext(),
+                    "com.shareplateapp.fileprovider",
+                    photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                cameraLauncher.launch(takePictureIntent);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(
+            imageFileName,  /* prefix */
+            ".jpg",        /* suffix */
+            storageDir     /* directory */
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
+            @NonNull int[] grantResults) {
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(getContext(), 
+                    "Camera permission is required to take photos", 
+                    Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 } 

@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +24,15 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.text.SimpleDateFormat;
+
+import com.bumptech.glide.Glide;
 
 public class HomeFragment extends Fragment {
 
@@ -40,6 +49,11 @@ public class HomeFragment extends Fragment {
     private DonationItemRepository donationItemRepository;
 
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private SortOption currentSortOption = SortOption.DEFAULT;
+    private SortDirection currentSortDirection = SortDirection.ASCENDING;
+
+    private ImageView sortIcon;
 
     @Nullable
     @Override
@@ -90,6 +104,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        Button sortButton = view.findViewById(R.id.sortButton);
+        sortButton.setOnClickListener(v -> showSortOptions());
+
         /* Comment out Urgent Donation Card components
         CardView urgentDonationCard = view.findViewById(R.id.urgent_donation_card);
         TextView urgentText = view.findViewById(R.id.urgent_text);
@@ -117,6 +134,10 @@ public class HomeFragment extends Fragment {
         backArrow = view.findViewById(R.id.back_arrow);
         normalToolbarContent = view.findViewById(R.id.normal_toolbar_content);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        sortIcon = view.findViewById(R.id.sort_icon);
+        
+        // Set up sort functionality
+        sortIcon.setOnClickListener(v -> showSortOptions());
     }
 
     private void loadDonationItems() {
@@ -127,6 +148,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDonationItemsLoaded(List<DonationItem> items) {
                 allDonationItems = items;
+                // Sort items by creation date (newest first) before adding to grid
+                Collections.sort(allDonationItems, (a, b) -> 
+                    Long.compare(b.getCreatedAt(), a.getCreatedAt()));
+                
                 // Clear existing views
                 donationGrid.removeAllViews();
                 // Add loaded items to the grid
@@ -154,20 +179,41 @@ public class HomeFragment extends Fragment {
         View itemView = getLayoutInflater().inflate(R.layout.donation_item_view, donationGrid, false);
 
         ImageView itemImage = itemView.findViewById(R.id.item_image);
-//        ImageView bookmarkIcon = itemView.findViewById(R.id.bookmark_icon);
         TextView itemName = itemView.findViewById(R.id.item_name);
         TextView itemFoodCategory = itemView.findViewById(R.id.item_foodCategory);
         TextView itemExpiredDate = itemView.findViewById(R.id.item_expiredDate);
         TextView itemQuantity = itemView.findViewById(R.id.item_quantity);
         TextView itemPickupTime = itemView.findViewById(R.id.item_pickupTime);
         TextView itemDistance = itemView.findViewById(R.id.item_distance);
+        TextView statusIndicator = itemView.findViewById(R.id.status_indicator);
 
-        itemImage.setImageResource(item.getImageResourceId());
+        // Show status indicator if item is completed
+        if (item.getStatus() != null && item.getStatus().equals("completed")) {
+            statusIndicator.setVisibility(View.VISIBLE);
+            // Optional: Add some visual dimming to the entire card
+            itemView.setAlpha(0.8f);
+        } else {
+            statusIndicator.setVisibility(View.GONE);
+            itemView.setAlpha(1.0f);
+        }
+
+        // Load image using Glide
+        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+            Glide.with(this)
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image)
+                .centerCrop()
+                .into(itemImage);
+        } else {
+            itemImage.setImageResource(item.getImageResourceId());
+        }
+
         itemName.setText(item.getName());
-        itemFoodCategory.setText("Food Category: " + (item.getFoodCategory() != null ? item.getFoodCategory() : "N/A"));
-        itemExpiredDate.setText("Expires: " + (item.getExpiredDate() != null ? item.getExpiredDate() : "N/A"));
-        itemQuantity.setText("Quantity: " + (item.getQuantity() != null ? item.getQuantity() : "N/A"));
-        itemPickupTime.setText("Pickup Time: " + (item.getPickupTime() != null ? item.getPickupTime() : "N/A"));
+        itemFoodCategory.setText(item.getFoodCategory());
+        itemExpiredDate.setText(item.getExpiredDate());
+        itemQuantity.setText(item.getQuantity());
+        itemPickupTime.setText(item.getPickupTime());
         itemDistance.setText(item.getLocation());
 
         itemView.setOnClickListener(v -> {
@@ -186,7 +232,12 @@ public class HomeFragment extends Fragment {
         donationGrid.removeAllViews();
 
         if (query.isEmpty()) {
-            for (DonationItem item : allDonationItems) {
+            // Maintain sort order when showing all items
+            List<DonationItem> sortedItems = new ArrayList<>(allDonationItems);
+            Collections.sort(sortedItems, (a, b) -> 
+                Long.compare(b.getCreatedAt(), a.getCreatedAt()));
+            
+            for (DonationItem item : sortedItems) {
                 addDonationItemView(item);
             }
         } else {
@@ -198,11 +249,125 @@ public class HomeFragment extends Fragment {
                                     item.getExpiredDate().toLowerCase().contains(lowercaseQuery) ||
                                     String.valueOf(item.getQuantity()).contains(lowercaseQuery) ||
                                     item.getPickupTime().toLowerCase().contains(lowercaseQuery))
+                    .sorted((a, b) -> Long.compare(b.getCreatedAt(), a.getCreatedAt()))  // Sort filtered results
                     .collect(Collectors.toList());
 
             for (DonationItem item : filteredItems) {
                 addDonationItemView(item);
             }
+        }
+    }
+
+    private void showSortOptions() {
+        String[] options = Arrays.stream(SortOption.values())
+            .map(SortOption::getDisplayName)
+            .toArray(String[]::new);
+
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Sort by")
+            .setSingleChoiceItems(options, currentSortOption.ordinal(), (dialog, which) -> {
+                currentSortOption = SortOption.values()[which];
+                if (currentSortOption != SortOption.DEFAULT) {
+                    showSortDirectionDialog();
+                } else {
+                    sortDonationItems();
+                }
+                dialog.dismiss();
+            })
+            .show();
+    }
+
+    private void showSortDirectionDialog() {
+        String[] directions = Arrays.stream(SortDirection.values())
+            .map(SortDirection::getDisplayName)
+            .toArray(String[]::new);
+
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Sort Direction")
+            .setSingleChoiceItems(directions, currentSortDirection.ordinal(), (dialog, which) -> {
+                currentSortDirection = SortDirection.values()[which];
+                sortDonationItems();
+                dialog.dismiss();
+            })
+            .show();
+    }
+
+    private void sortDonationItems() {
+        if (allDonationItems == null) return;
+
+        List<DonationItem> sortedItems = new ArrayList<>(allDonationItems);
+        
+        switch (currentSortOption) {
+            case DATE_CREATED:
+                // Assuming newer items are at the end of the list
+                Collections.reverse(sortedItems);
+                break;
+                
+            case EXPIRY_DATE:
+                sortedItems.sort((a, b) -> {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+                        Date dateA = sdf.parse(a.getExpiredDate());
+                        Date dateB = sdf.parse(b.getExpiredDate());
+                        return currentSortDirection == SortDirection.ASCENDING ? 
+                            dateA.compareTo(dateB) : dateB.compareTo(dateA);
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                });
+                break;
+                
+            case CATEGORY:
+                sortedItems.sort((a, b) -> {
+                    int result = a.getFoodCategory().compareToIgnoreCase(b.getFoodCategory());
+                    return currentSortDirection == SortDirection.ASCENDING ? result : -result;
+                });
+                break;
+                
+            case QUANTITY:
+                sortedItems.sort((a, b) -> {
+                    try {
+                        int qtyA = Integer.parseInt(a.getQuantity().replaceAll("[^0-9]", ""));
+                        int qtyB = Integer.parseInt(b.getQuantity().replaceAll("[^0-9]", ""));
+                        return currentSortDirection == SortDirection.ASCENDING ? 
+                            Integer.compare(qtyA, qtyB) : Integer.compare(qtyB, qtyA);
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                });
+                break;
+                
+            case LOCATION:
+                sortedItems.sort((a, b) -> {
+                    int result = a.getLocation().compareToIgnoreCase(b.getLocation());
+                    return currentSortDirection == SortDirection.ASCENDING ? result : -result;
+                });
+                break;
+                
+            case PICKUP_TIME:
+                sortedItems.sort((a, b) -> {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
+                        Date timeA = sdf.parse(a.getPickupTime());
+                        Date timeB = sdf.parse(b.getPickupTime());
+                        return currentSortDirection == SortDirection.ASCENDING ? 
+                            timeA.compareTo(timeB) : timeB.compareTo(timeA);
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                });
+                break;
+                
+            case DEFAULT:
+            default:
+                // Do nothing, keep original order
+                break;
+        }
+
+        // Clear and reload the grid with sorted items
+        donationGrid.removeAllViews();
+        for (DonationItem item : sortedItems) {
+            addDonationItemView(item);
         }
     }
 
