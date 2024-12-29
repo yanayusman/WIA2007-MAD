@@ -113,4 +113,8 @@ public class DonationItem implements Serializable {
     public void setOwnerProfileImageUrl(String ownerProfileImageUrl) {
         this.ownerProfileImageUrl = ownerProfileImageUrl;
     }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

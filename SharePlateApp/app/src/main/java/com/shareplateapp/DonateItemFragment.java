@@ -32,24 +32,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class DonateItemFragment extends Fragment {
-    private EditText nameInput;
-    private EditText foodCategoryInput;
-    private EditText expiryDateInput;
-    private EditText quantityInput;
-    private EditText pickupTimeInput;
-    private EditText locationInput;
-    private Button submitButton;
+    protected EditText nameInput;
+    protected EditText foodCategoryInput;
+    protected EditText expiryDateInput;
+    protected EditText quantityInput;
+    protected EditText pickupTimeInput;
+    protected EditText locationInput;
+    protected Button submitButton;
     private ImageView backButton;
     private DonationItemRepository donationItemRepository;
     private Calendar calendar;
     private SimpleDateFormat dateFormatter;
     private Calendar timeCalendar;
     private SimpleDateFormat timeFormatter;
-    private ImageView foodImageView;
-    private Uri selectedImageUri;
+    protected ImageView foodImageView;
+    protected Uri selectedImageUri;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private FirebaseStorage storage;
-    private StorageReference storageRef;
+    protected StorageReference storageRef;
+    protected ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,7 +122,7 @@ public class DonateItemFragment extends Fragment {
         uploadImageButton.setOnClickListener(v -> openImagePicker());
     }
 
-    private void submitDonation() {
+    protected void submitDonation() {
         // Validate inputs
         if (!validateInputs()) {
             return;
@@ -134,7 +135,7 @@ public class DonateItemFragment extends Fragment {
         }
 
         // Show loading indicator
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         submitButton.setEnabled(false);
 
@@ -231,7 +232,7 @@ public class DonateItemFragment extends Fragment {
         });
     }
 
-    private boolean validateInputs() {
+    protected boolean validateInputs() {
         if (nameInput.getText().toString().trim().isEmpty()) {
             nameInput.setError("Name is required");
             return false;

@@ -169,6 +169,17 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/editButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Donation"
+                    android:textColor="@color/white"
+                    android:backgroundTint="#2196F3"
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"
+                    android:padding="12dp"/>
+
+                <Button
                     android:id="@+id/completeButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

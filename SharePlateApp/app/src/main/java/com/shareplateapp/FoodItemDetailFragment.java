@@ -87,6 +87,16 @@ public class FoodItemDetailFragment extends Fragment {
 
         // Get views and set their values
         updateUIWithDonationItem(view, currentDonationItem);
+
+        Button editButton = view.findViewById(R.id.editButton);
+        
+        // Show edit button only for the owner
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && currentDonationItem != null && 
+            currentDonationItem.getOwnerUsername().equals(currentUser.getDisplayName())) {
+            editButton.setVisibility(View.VISIBLE);
+            editButton.setOnClickListener(v -> openEditFragment());
+        }
     }
 
     private void refreshFoodDetails() {
@@ -412,5 +422,14 @@ public class FoodItemDetailFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void openEditFragment() {
+        EditDonationFragment editFragment = EditDonationFragment.newInstance(currentDonationItem);
+        requireActivity().getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.fragment_container, editFragment)
+            .addToBackStack(null)
+            .commit();
     }
 } 
