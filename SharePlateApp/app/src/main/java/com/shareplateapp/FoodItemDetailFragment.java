@@ -28,6 +28,8 @@ import android.content.IntentFilter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class FoodItemDetailFragment extends Fragment {
     private static final String ARG_FOOD_ITEM = "food_item";
@@ -35,6 +37,7 @@ public class FoodItemDetailFragment extends Fragment {
     private BroadcastReceiver profileUpdateReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DonationItem currentDonationItem;
+    private RecyclerView detailRecyclerView;
 
     public static FoodItemDetailFragment newInstance(DonationItem item) {
         FoodItemDetailFragment fragment = new FoodItemDetailFragment();
@@ -54,6 +57,14 @@ public class FoodItemDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Get the DonationItem from arguments once
+        if (getArguments() != null) {
+            currentDonationItem = (DonationItem) getArguments().getSerializable(ARG_FOOD_ITEM);
+        }
+        if (currentDonationItem == null) {
+            return;
+        }
+
         // Initialize SwipeRefreshLayout
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(
@@ -65,26 +76,51 @@ public class FoodItemDetailFragment extends Fragment {
         
         swipeRefreshLayout.setOnRefreshListener(this::refreshFoodDetails);
 
-        // Get the DonationItem from arguments once
-        if (getArguments() != null) {
-            currentDonationItem = (DonationItem) getArguments().getSerializable(ARG_FOOD_ITEM);
-        }
-        if (currentDonationItem == null) {
-            return;
+        // Set up back button in toolbar
+        ImageView backButton = view.findViewById(R.id.backButton);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
         }
 
+        // Initialize RecyclerView
+        detailRecyclerView = view.findViewById(R.id.detail_recycler_view);
+        detailRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        
+        // Convert your existing layout content into a RecyclerView item
+        View contentView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.food_item_detail_content, null);
+            
         // Setup views and load data
-        setupViews(view);
+        setupViews(contentView);
+        
+        // Create a simple adapter with single item
+        RecyclerView.Adapter<RecyclerView.ViewHolder> adapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.food_item_detail_content, parent, false);
+                return new RecyclerView.ViewHolder(itemView) {};
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                setupViews(holder.itemView);
+            }
+
+            @Override
+            public int getItemCount() {
+                return 1;
+            }
+        };
+
+        detailRecyclerView.setAdapter(adapter);
     }
 
     private void setupViews(View view) {
-        // Move all your view setup code here from onViewCreated
-        // Add back button click listener
-        ImageView backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager().popBackStack();
-        });
-
+        // Remove the back button setup since it's now handled in onViewCreated
         // Get views and set their values
         updateUIWithDonationItem(view, currentDonationItem);
 
