@@ -31,22 +31,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class DonateNonFoodFragment extends Fragment {
-    private EditText nameInput;
-    private EditText categoryInput;
-    private EditText descriptionInput;
-    private EditText quantityInput;
-    private EditText pickupTimeInput;
-    private EditText locationInput;
-    private Button submitButton;
+    protected EditText nameInput, categoryInput, descriptionInput, quantityInput, pickupTimeInput, locationInput;
+    protected Button submitButton;
     private ImageView backButton;
     private NonFoodItemRepository nonFoodItemRepository;
     private Calendar timeCalendar;
     private SimpleDateFormat timeFormatter;
     private ImageView itemImageView;
-    private Uri selectedImageUri;
+    protected ImageView foodImageView;
+    protected Uri selectedImageUri;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private FirebaseStorage storage;
-    private StorageReference storageRef;
+    protected StorageReference storageRef;
+    protected ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +109,7 @@ public class DonateNonFoodFragment extends Fragment {
         uploadImageButton.setOnClickListener(v -> openImagePicker());
     }
 
-    private void submitDonation() {
+    protected void submitDonation() {
         // Validate inputs
         if (!validateInputs()) {
             return;
@@ -125,7 +122,7 @@ public class DonateNonFoodFragment extends Fragment {
         }
 
         // Show loading indicator
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         submitButton.setEnabled(false);
 
@@ -172,6 +169,8 @@ public class DonateNonFoodFragment extends Fragment {
             // Get current user
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String username = currentUser != null ? currentUser.getDisplayName() : "Anonymous";
+            String ownerProfileImageUrl = currentUser.getPhotoUrl() != null ?
+                    currentUser.getPhotoUrl().toString() : "";
 
             // Format the data
             String name = nameInput.getText().toString().trim();
@@ -180,6 +179,7 @@ public class DonateNonFoodFragment extends Fragment {
             String quantity = quantityInput.getText().toString().trim();
             String pickupTime = pickupTimeInput.getText().toString().trim();
             String location = locationInput.getText().toString().trim();
+            String donateType = "NonFood";
 
             // Create new DonationItem with owner username
             NonFoodItem newDonation = new NonFoodItem(
@@ -191,7 +191,9 @@ public class DonateNonFoodFragment extends Fragment {
                     location,
                     R.drawable.placeholder_image,
                     imageUrl,
-                    username
+                    username,
+                    ownerProfileImageUrl,
+                    donateType
             );
 
             // Add to Firebase
@@ -214,7 +216,7 @@ public class DonateNonFoodFragment extends Fragment {
         }
     }
 
-    private boolean validateInputs() {
+    protected boolean validateInputs() {
         if (nameInput.getText().toString().trim().isEmpty()) {
             nameInput.setError("Name is required");
             return false;
@@ -267,4 +269,5 @@ public class DonateNonFoodFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
+
 }
