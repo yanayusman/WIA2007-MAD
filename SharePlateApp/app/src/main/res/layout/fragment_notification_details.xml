@@ -1,0 +1,100 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            android:layout_gravity="start"
+            android:padding="4dp" />
+
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/notificationIcon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_alert"
+            android:layout_marginTop="16dp" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/notificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Food Donation Alert"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/notificationTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/poppins"
+            android:text="24 Dec 2024 at 4:44 PM"
+            android:textColor="#888888"
+            android:textSize="14sp" />
+
+        <!-- Main Message -->
+        <TextView
+            android:id="@+id/notificationMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_horizontal"
+            android:text="Fresh vegetables are available for pickup!"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Food Image -->
+        <ImageView
+            android:id="@+id/notificationImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/sample_food_image"
+            android:scaleType="centerCrop" />
+
+        <!-- Detailed Description -->
+        <TextView
+            android:id="@+id/notificationDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="A local grocery store has donated 10 kg of fresh vegetables. 🥬🍅\n\nLocation: Taman Midah Community Center\n\nAvailable until 6 PM today. Act fast!"
+            android:textSize="16sp" />
+
+        <!-- Action Button -->
+        <Button
+            android:id="@+id/actionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="View on Map"
+            android:backgroundTint="#228B22"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</ScrollView>
