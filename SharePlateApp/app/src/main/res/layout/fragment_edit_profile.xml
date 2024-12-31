@@ -91,7 +91,7 @@
             android:layout_marginStart="147dp"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="-8dp"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
@@ -103,10 +103,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="-5"
             android:orientation="vertical">
 
             <!-- Username -->
+
+
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
@@ -114,12 +116,13 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:hint="@string/username"
-                android:text="yANCHUI"
                 android:backgroundTint="#CCCCCC"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp" />
 
             <!-- Email -->
+
+
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
@@ -127,13 +130,14 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:hint="@string/email"
-                android:text="yanchui@gmail.com"
                 android:backgroundTint="#CCCCCC"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
                 android:inputType="textEmailAddress" />
 
             <!-- Phone Number -->
+
+
             <EditText
                 android:id="@+id/phone_number"
                 android:layout_width="match_parent"
@@ -141,13 +145,14 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:hint="@string/phone_number"
-                android:text="+14987889999"
                 android:backgroundTint="#CCCCCC"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
                 android:inputType="phone" />
 
             <!-- Password -->
+
+
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
@@ -155,11 +160,54 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:hint="@string/password"
-                android:text="evFTbyVVCd"
                 android:backgroundTint="#CCCCCC"
                 android:padding="12dp"
                 android:layout_marginBottom="24dp"
                 android:inputType="textPassword" />
+
+            <!-- My Location -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+
+                <!-- Title -->
+
+
+                <!-- Location Picker -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Location Display -->
+                    <EditText
+                        android:id="@+id/location_display"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Select your location"
+                        android:backgroundTint="#CCCCCC"
+                        android:padding="12dp"
+                        android:focusable="false"
+                        android:clickable="false"
+                        android:layout_marginEnd="8dp" />
+
+                    <!-- Location Icon -->
+                    <ImageButton
+                        android:id="@+id/select_location_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_location"
+                        android:contentDescription="Select location"
+                        android:padding="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <!-- Update Button -->
             <Button

@@ -89,6 +89,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="-45dp"
                         android:layout_marginBottom="8dp">
                         
                         <ImageView
@@ -121,15 +122,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <!-- Email -->
-                    <TextView
-                        android:id="@+id/email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
-                        android:text="username@gmail.com"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp" />
+
                 </LinearLayout>
 
                 <!-- Statistics Section -->
@@ -137,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="-30dp"
+                    android:layout_marginTop="-65dp"
                     android:layout_marginEnd="15dp"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -152,6 +145,7 @@
                         android:gravity="center"
                         android:orientation="vertical"
                         android:background="@drawable/rounded_corners"
+                        android:onClick="onFoodDonatedClick"
                         android:padding="8dp">
 
                         <TextView
@@ -232,7 +226,8 @@
                         android:gravity="center"
                         android:background="@drawable/rounded_corners"
                         android:orientation="vertical"
-                        android:padding="8dp">
+                        android:padding="8dp"
+                        android:onClick="onCampaignsJoinedClick">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -307,7 +302,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
                     <com.google.android.material.button.MaterialButton
@@ -348,16 +343,33 @@
 
                     <!-- Settings -->
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/settingsButton"
+                        android:id="@+id/rate_app_button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginEnd="32dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Settings"
+                        android:text="Rate App"
                         android:textColor="@color/black"
                         app:backgroundTint="#FFFFFF"
-                        app:icon="@drawable/settings"
+                        app:icon="@drawable/rate_app"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="#000000"
+                        app:strokeColor="#000000"
+                        app:strokeWidth="1dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/terms_conditions_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Terms and Conditions"
+                        android:textColor="@color/black"
+                        app:backgroundTint="#FFFFFF"
+                        app:icon="@drawable/terms_condition"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
                         app:iconTint="#000000"

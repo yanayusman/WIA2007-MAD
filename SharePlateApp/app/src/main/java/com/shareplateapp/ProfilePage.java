@@ -131,6 +131,8 @@ public class ProfilePage extends Fragment {
         return view;
     }
 
+    
+
     private void signOut() {
         Log.d(TAG, "signOut: Showing confirmation dialog");
         
@@ -429,4 +431,6 @@ public class ProfilePage extends Fragment {
             });
         }
     }
+
+
 }
