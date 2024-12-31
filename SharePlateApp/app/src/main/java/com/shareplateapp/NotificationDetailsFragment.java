@@ -56,4 +56,3 @@ public class NotificationDetailsFragment extends Fragment {
         return view;
     }
 }
-}
