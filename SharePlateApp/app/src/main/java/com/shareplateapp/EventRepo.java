@@ -36,28 +36,14 @@ public class EventRepo {
                         String location = document.getString("location");
                         Long imageResourceID = document.getLong("imageResourceID");
                         int img = imageResourceID != null ? imageResourceID.intValue() : 0;
+                        String imageUrl = document.getString("imageUrl");
+                        String ownerImageUrl = document.getString("ownerImageUrl");
 
-                        items.add(new Event(name, desc, date, time, typeOfEvents, seatAvailable, location, img));
+                        items.add(new Event(name, desc, date, time, typeOfEvents, seatAvailable, location, img, imageUrl, ownerImageUrl));
                     }
                     listener.onEventItemsLoaded(items);
                 })
                 .addOnFailureListener(listener::onError);
     }
 
-    public void addEventItem(Event item) {
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.put("name", item.getName());
-        eventData.put("description", item.getDescription());
-        eventData.put("date", item.getDate());
-        eventData.put("time", item.getTime());
-        eventData.put("location", item.getLocation());
-        eventData.put("imageResourceID", item.getImageResourceId());
-
-        db.collection(COLLECTION_NAME)
-                .add(eventData)
-                .addOnSuccessListener(documentReference ->
-                        System.out.println("Event added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e ->
-                        System.err.println("Error adding event: " + e));
-    }
 }

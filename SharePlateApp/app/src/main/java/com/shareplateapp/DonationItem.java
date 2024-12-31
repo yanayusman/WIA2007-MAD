@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DonationItem implements Serializable {
-    private String name,foodCategory, expiredDate, quantity, pickupTime, location, imageUrl, ownerUsername, documentId, status, ownerProfileImageUrl;
+    private String name,foodCategory, description, category, expiredDate, quantity, pickupTime, location, imageUrl, ownerUsername, documentId, status, ownerProfileImageUrl, donateType;
     private int imageResourceId;
     private long createdAt;
 
@@ -15,9 +15,11 @@ public class DonationItem implements Serializable {
         // Required empty constructor for Firestore
     }
 
-    public DonationItem(String name, String foodCategory, String expiredDate, String quantity, String pickupTime, String location, int imageResourceId, String imageUrl, String ownerUsername, String ownerProfileImageUrl) {
+    public DonationItem(String name, String foodCategory, String description, String category, String expiredDate, String quantity, String pickupTime, String location, int imageResourceId, String imageUrl, String ownerUsername, String donateType, String ownerProfileImageUrl) {
         this.name = name;
         this.foodCategory = foodCategory;
+        this.description = description;
+        this.category = category;
         this.expiredDate = expiredDate;
         this.quantity = quantity;
         this.pickupTime = pickupTime;
@@ -28,6 +30,7 @@ public class DonationItem implements Serializable {
         this.ownerProfileImageUrl = ownerProfileImageUrl;
         this.status = "active";
         this.createdAt = System.currentTimeMillis();
+        this.donateType = donateType;
     }
 
     // Getter methods
@@ -37,6 +40,14 @@ public class DonationItem implements Serializable {
 
     public String getFoodCategory() {
         return foodCategory;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public String getExpiredDate() {
@@ -106,5 +117,13 @@ public class DonationItem implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDonateType(){
+        return donateType;
+    }
+
+    public void setDonateType(String donateType){
+        this.donateType = donateType;
     }
 }
