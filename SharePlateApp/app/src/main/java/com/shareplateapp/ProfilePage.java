@@ -79,7 +79,7 @@ public class ProfilePage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
-        // Initialize the Rate App button
+        // Initialize  Rate App button
         LinearLayout rateAppButton = view.findViewById(R.id.rate_app_button);
 
         // Set click listener for Rate App button
