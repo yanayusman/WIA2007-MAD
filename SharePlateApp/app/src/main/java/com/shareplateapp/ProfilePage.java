@@ -3,10 +3,12 @@ package com.shareplateapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -77,6 +79,18 @@ public class ProfilePage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
+        // Initialize the Rate App button
+        LinearLayout rateAppButton = view.findViewById(R.id.rate_app_button);
+
+        // Set click listener for Rate App button
+        rateAppButton.setOnClickListener(v -> {
+            // Show the rating dialog
+            RateUIPage rateUIPage = new RateUIPage(getActivity());
+            rateUIPage.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+            rateUIPage.setCancelable(false);
+            rateUIPage.show();
+        });
+
         Log.d(TAG, "onCreateView: Initializing views");
         
         // Initialize views
@@ -131,7 +145,7 @@ public class ProfilePage extends Fragment {
         return view;
     }
 
-    
+
 
     private void signOut() {
         Log.d(TAG, "signOut: Showing confirmation dialog");
