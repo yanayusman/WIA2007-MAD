@@ -71,13 +71,16 @@ public class EditDonationFragment extends DonateItemFragment {
         DonationItem updatedItem = new DonationItem(
             nameInput.getText().toString(),
             foodCategoryInput.getText().toString(),
+            descriptionInput.getText().toString(),
+            "", // category
             expiryDateInput.getText().toString(),
             quantityInput.getText().toString(),
             pickupTimeInput.getText().toString(),
             locationInput.getText().toString(),
-            donationItem.getImageResourceId(),
+            R.drawable.placeholder_image,
             donationItem.getImageUrl(),
             donationItem.getOwnerUsername(),
+            donationItem.getDonateType(),
             donationItem.getOwnerProfileImageUrl()
         );
         updatedItem.setDocumentId(donationItem.getDocumentId());

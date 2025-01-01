@@ -44,99 +44,52 @@ import java.util.Locale;
 import android.app.AlertDialog;
 
 public class DonateItemFragment extends Fragment {
-    protected EditText nameInput, foodCategoryInput, expiryDateInput, quantityInput, pickupTimeInput, locationInput;
+    protected EditText nameInput, foodCategoryInput, descriptionInput, expiryDateInput, 
+                      quantityInput, pickupTimeInput, locationInput;
     protected Button submitButton;
-    private ImageView backButton;
-    private DonationItemRepository donationItemRepository;
-    private Calendar calendar;
-    private SimpleDateFormat dateFormatter;
-    private Calendar timeCalendar;
-    private SimpleDateFormat timeFormatter;
+    protected ImageView backButton;
     protected ImageView foodImageView;
     protected Uri selectedImageUri;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private FirebaseStorage storage;
-    protected StorageReference storageRef;
     protected ProgressBar progressBar;
-    private ActivityResultLauncher<Intent> cameraLauncher;
-    private Uri photoUri;
-    private static final int CAMERA_PERMISSION_REQUEST = 100;
+    protected StorageReference storageRef;
+    private DonationItemRepository repository;
+    private Calendar timeCalendar;
+    private SimpleDateFormat timeFormatter;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        donationItemRepository = new DonationItemRepository();
-        calendar = Calendar.getInstance();
+        repository = new DonationItemRepository();
         timeCalendar = Calendar.getInstance();
-        dateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
-        timeFormatter = new SimpleDateFormat("hh:mm a", Locale.US); // 12-hour format with AM/PM
+        timeFormatter = new SimpleDateFormat("hh:mm a", Locale.US);
 
-        storage = FirebaseStorage.getInstance();
+        // Initialize Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
         // Initialize image picker launcher
         imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        selectedImageUri = result.getData().getData();
-                        // Show selected image
-                        Glide.with(this)
-                                .load(selectedImageUri)
-                                .centerCrop()
-                                .into(foodImageView);
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    if (selectedImageUri != null) {
+                        foodImageView.setImageURI(selectedImageUri);
                     }
                 }
-        );
-
-        // Initialize camera launcher
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (photoUri != null) {
-                            selectedImageUri = photoUri;
-                            // Show selected image
-                            Glide.with(this)
-                                    .load(photoUri)
-                                    .centerCrop()
-                                    .into(foodImageView);
-                        }
-                    }
-                }
+            }
         );
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_donate_food, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_donate_item, container, false);
 
         // Initialize views
-        initializeViews(view);
-
-        // Set up click listeners
-        backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
-
-        submitButton.setOnClickListener(v -> submitDonation());
-
-        // Set up date picker
-        expiryDateInput.setOnClickListener(v -> showDatePicker());
-        expiryDateInput.setFocusable(false); // Prevent keyboard from showing up
-
-        // Set up time picker
-        pickupTimeInput.setOnClickListener(v -> showTimePicker());
-        pickupTimeInput.setFocusable(false);
-    }
-
-    private void initializeViews(View view) {
         nameInput = view.findViewById(R.id.name_input);
         foodCategoryInput = view.findViewById(R.id.food_category_input);
+        descriptionInput = view.findViewById(R.id.description_input); // Make sure this ID exists in your layout
         expiryDateInput = view.findViewById(R.id.expiry_date_input);
         quantityInput = view.findViewById(R.id.quantity_input);
         pickupTimeInput = view.findViewById(R.id.pickup_time_input);
@@ -144,123 +97,130 @@ public class DonateItemFragment extends Fragment {
         submitButton = view.findViewById(R.id.submit_button);
         backButton = view.findViewById(R.id.back_button);
         foodImageView = view.findViewById(R.id.food_image);
-        Button uploadImageButton = view.findViewById(R.id.upload_image_button);
+        progressBar = view.findViewById(R.id.progress_bar);
 
-        uploadImageButton.setOnClickListener(v -> showImageSourceDialog());
+        // Setup click listeners and other initialization
+        setupClickListeners();
+
+        return view;
+    }
+
+    private void setupClickListeners() {
+        // Setup back button click listener
+        backButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
+        // Setup food image click listener for image selection
+        foodImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
+        });
+
+        // Setup submit button click listener
+        submitButton.setOnClickListener(v -> submitDonation());
+
+        // Setup pickup time input click listener
+        pickupTimeInput.setOnClickListener(v -> showTimePickerDialog());
+
+        // Setup expiry date input click listener
+        expiryDateInput.setOnClickListener(v -> showDatePickerDialog());
+    }
+
+    private void showTimePickerDialog() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+            getContext(),
+            (view, hourOfDay, minute) -> {
+                timeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                timeCalendar.set(Calendar.MINUTE, minute);
+                pickupTimeInput.setText(timeFormatter.format(timeCalendar.getTime()));
+            },
+            timeCalendar.get(Calendar.HOUR_OF_DAY),
+            timeCalendar.get(Calendar.MINUTE),
+            false
+        );
+        timePickerDialog.show();
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            requireContext(),
+            (view, year, month, dayOfMonth) -> {
+                calendar.set(year, month, dayOfMonth);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+                expiryDateInput.setText(dateFormat.format(calendar.getTime()));
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
     }
 
     protected void submitDonation() {
-        // Validate inputs
-        if (!validateInputs()) {
-            return;
-        }
-
-        View view = getView();
-        if (view == null) {
-            Toast.makeText(getContext(), "Error: View not found", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (!validateInputs()) return;
 
         // Show loading indicator
-        progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         submitButton.setEnabled(false);
 
+        // Get current user
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "Please login to donate", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // If image was selected, upload it first
         if (selectedImageUri != null) {
-            // Upload image first
             String imageFileName = "food_images/" + System.currentTimeMillis() + ".jpg";
             StorageReference imageRef = storageRef.child(imageFileName);
 
             imageRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Get download URL
-                        imageRef.getDownloadUrl()
-                                .addOnSuccessListener(downloadUri -> {
-                                    // Create and save donation with image URL
-                                    saveDonationWithImage(downloadUri.toString());
-                                    progressBar.setVisibility(View.GONE);
-                                    submitButton.setEnabled(true);
-                                })
-                                .addOnFailureListener(e -> {
-                                    progressBar.setVisibility(View.GONE);
-                                    submitButton.setEnabled(true);
-                                    Toast.makeText(getContext(),
-                                            "Failed to get image URL: " + e.getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                });
-                    })
-                    .addOnFailureListener(e -> {
-                        progressBar.setVisibility(View.GONE);
-                        submitButton.setEnabled(true);
-                        Toast.makeText(getContext(),
-                                "Failed to upload image: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    });
+                .addOnSuccessListener(taskSnapshot -> 
+                    imageRef.getDownloadUrl()
+                        .addOnSuccessListener(downloadUri -> {
+                            createDonationWithImage(downloadUri.toString(), currentUser.getDisplayName());
+                        })
+                        .addOnFailureListener(e -> handleError("Failed to get download URL: " + e.getMessage())))
+                .addOnFailureListener(e -> handleError("Failed to upload image: " + e.getMessage()));
         } else {
-            // Save donation without image
-            saveDonationWithImage(null);
-            progressBar.setVisibility(View.GONE);
-            submitButton.setEnabled(true);
+            createDonationWithImage(null, currentUser.getDisplayName());
         }
     }
 
-    private void saveDonationWithImage(String imageUrl) {
-        String name = nameInput.getText().toString();
-        String foodCategory = foodCategoryInput.getText().toString();
-        String description = "";
-        String category = "";
-        String expiredDate = expiryDateInput.getText().toString();
-        String quantity = quantityInput.getText().toString();
-        String pickupTime = pickupTimeInput.getText().toString();
-        String location = locationInput.getText().toString();
-        String donateType = "Food";
-
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(getContext(), "You must be logged in to donate", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String ownerUsername = currentUser.getDisplayName();
-        String ownerProfileImageUrl = currentUser.getPhotoUrl() != null ?
-                currentUser.getPhotoUrl().toString() : "";
-
-        // Create new donation with all fields including profile image URL
+    private void createDonationWithImage(String imageUrl, String ownerUsername) {
         DonationItem newDonation = new DonationItem(
-                name,
-                foodCategory,
-                description,
-                category,
-                expiredDate,
-                quantity,
-                pickupTime,
-                location,
-                R.drawable.placeholder_image,
-                imageUrl,
-                ownerUsername,
-                donateType,
-                ownerProfileImageUrl
+            nameInput.getText().toString(),
+            foodCategoryInput.getText().toString(),
+            descriptionInput.getText().toString(),
+            "", // category
+            expiryDateInput.getText().toString(),
+            quantityInput.getText().toString(),
+            pickupTimeInput.getText().toString(),
+            locationInput.getText().toString(),
+            R.drawable.placeholder_image,
+            imageUrl,
+            ownerUsername,
+            "food", // donateType
+            "" // ownerProfileImageUrl - can be updated later if needed
         );
 
-        // Save to repository
-        DonationItemRepository repository = new DonationItemRepository();
         repository.addDonationItem(newDonation, new DonationItemRepository.OnDonationCompleteListener() {
             @Override
             public void onDonationSuccess() {
                 if (getContext() != null) {
                     Toast.makeText(getContext(), "Donation added successfully", Toast.LENGTH_SHORT).show();
-                    // Clear form or navigate back
                     requireActivity().getSupportFragmentManager().popBackStack();
                 }
+                progressBar.setVisibility(View.GONE);
+                submitButton.setEnabled(true);
             }
 
             @Override
             public void onDonationFailure(Exception e) {
-                if (getContext() != null) {
-                    Toast.makeText(getContext(),
-                            "Failed to add donation: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                }
+                handleError("Failed to add donation: " + e.getMessage());
             }
         });
     }
@@ -271,7 +231,7 @@ public class DonateItemFragment extends Fragment {
             return false;
         }
         if (foodCategoryInput.getText().toString().trim().isEmpty()) {
-            foodCategoryInput.setError("Food category is required");
+            foodCategoryInput.setError("Category is required");
             return false;
         }
         if (expiryDateInput.getText().toString().trim().isEmpty()) {
@@ -293,132 +253,11 @@ public class DonateItemFragment extends Fragment {
         return true;
     }
 
-    private void showDatePicker() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                requireContext(),
-                R.style.CustomPickerTheme,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    updateExpiryDateLabel();
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-
-        // Set minimum date as today
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-
-        datePickerDialog.show();
-    }
-
-    private void updateExpiryDateLabel() {
-        expiryDateInput.setText(dateFormatter.format(calendar.getTime()));
-    }
-
-    private void showTimePicker() {
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                requireContext(),
-                R.style.CustomPickerTheme,
-                (view, hourOfDay, minute) -> {
-                    timeCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    timeCalendar.set(Calendar.MINUTE, minute);
-                    updateTimeLabel();
-                },
-                timeCalendar.get(Calendar.HOUR_OF_DAY),
-                timeCalendar.get(Calendar.MINUTE),
-                false
-        );
-
-        timePickerDialog.show();
-    }
-
-    private void updateTimeLabel() {
-        pickupTimeInput.setText(timeFormatter.format(timeCalendar.getTime()));
-    }
-
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickerLauncher.launch(intent);
-    }
-
-    private void showImageSourceDialog() {
-        String[] options = {"Take Photo", "Choose from Gallery"};
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Select Image Source")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        // Take photo with camera
-                        if (checkCameraPermission()) {
-                            openCamera();
-                        } else {
-                            requestCameraPermission();
-                        }
-                    } else {
-                        // Choose from gallery
-                        openImagePicker();
-                    }
-                })
-                .show();
-    }
-
-    private boolean checkCameraPermission() {
-        return ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(requireActivity(),
-                new String[]{Manifest.permission.CAMERA},
-                CAMERA_PERMISSION_REQUEST);
-    }
-
-    private void openCamera() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Toast.makeText(getContext(),
-                        "Error creating image file", Toast.LENGTH_SHORT).show();
-            }
-
-            if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(requireContext(),
-                        "com.shareplateapp.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                cameraLauncher.launch(takePictureIntent);
-            }
+    private void handleError(String errorMessage) {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",        /* suffix */
-                storageDir     /* directory */
-        );
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                Toast.makeText(getContext(),
-                        "Camera permission is required to take photos",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
+        progressBar.setVisibility(View.GONE);
+        submitButton.setEnabled(true);
     }
 } 

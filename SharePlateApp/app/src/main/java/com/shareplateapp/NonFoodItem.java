@@ -19,9 +19,12 @@ public class NonFoodItem implements Serializable {
     private String documentId;
     private String status; // "active" or "completed"
     private long createdAt;
+    private String ownerProfileImageUrl;
+    private String donateType;
 
-    public NonFoodItem(String name, String category, String description, String quantity, String pickupTime, String location, int imageResourceId, String imageUrl, String ownerUsername){
-
+    public NonFoodItem(String name, String category, String description, String quantity,
+                       String pickupTime, String location, int imageResourceId, String imageUrl,
+                       String ownerUsername, String ownerProfileImageUrl, String donateType) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -31,10 +34,10 @@ public class NonFoodItem implements Serializable {
         this.imageResourceId = imageResourceId;
         this.imageUrl = imageUrl;
         this.ownerUsername = ownerUsername;
-        this.documentId = null; // Will be set after Firestore creates the document
-        this.status = "active"; // Default status
-        this.createdAt = System.currentTimeMillis(); // Set current time as default
-
+        this.ownerProfileImageUrl = ownerProfileImageUrl;
+        this.donateType = donateType;
+        this.status = "active";
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getName() {
@@ -100,6 +103,18 @@ public class NonFoodItem implements Serializable {
     public String getFormattedCreationDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.US);
         return sdf.format(new Date(createdAt));
+    }
+
+    public String getOwnerProfileImageUrl() {
+        return ownerProfileImageUrl;
+    }
+
+    public String getDonateType() {
+        return donateType;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }
