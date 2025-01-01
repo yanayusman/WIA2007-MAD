@@ -39,7 +39,9 @@ public class NotificationFragment extends Fragment {
         notificationList.add(new Notification("Upcoming Event", "Join our community food drive this Saturday at the park!", "1 day ago", R.drawable.ic_food_drive));
         notificationList.add(new Notification("Donation Received", "You have received a new donation of vegetables.", "3 hours ago", R.drawable.ic_food_donation));
 
-        notificationAdapter = new NotificationAdapter(notificationList);
+        notificationAdapter = new NotificationAdapter(notificationList, notification -> {
+            // Handle notification click
+        });
         notificationRecyclerView.setAdapter(notificationAdapter);
 
         return view;

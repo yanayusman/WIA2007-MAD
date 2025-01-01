@@ -56,8 +56,10 @@ public class NonFoodItemRepository {
                                         pickupTime != null ? pickupTime : "",
                                         location != null ? location : "",
                                         imageResourceId,
-                                        imageUrl,
-                                        ownerUsername != null ? ownerUsername : "Anonymous"
+                                        imageUrl != null ? imageUrl : "",
+                                        ownerUsername != null ? ownerUsername : "Anonymous",
+                                        document.getString("ownerProfileImageUrl"),
+                                        document.getString("donateType")
                                 );
                                 // Set the document ID and status
                                 item.setDocumentId(document.getId());
@@ -116,15 +118,17 @@ public class NonFoodItemRepository {
                     if (queryDocumentSnapshots.isEmpty()) {
                         // Add sample data with owner username
                         addNonFoodItem(new NonFoodItem(
-                                "(sample) T-shirt",
-                                "Clothing",
-                                "a brand new t-shirt, sized XL",
+                                "Sample Item",
+                                "Category",
+                                "Description",
                                 "1",
-                                "Available by 5 pm",
-                                "KL",
-                                R.drawable.bread,
+                                "12:00 PM",
+                                "Location",
+                                R.drawable.placeholder_image,
                                 null,
-                                "Sample User" // Add owner username for sample data
+                                "Anonymous",
+                                "",
+                                "non-food"
                         ));
                     }
                 });
