@@ -97,65 +97,35 @@ public class DonationItemRepository {
     }
 
     public void addDonationItem(DonationItem item, OnDonationCompleteListener listener) {
-        // Get current user
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        // Add debug logging
+        System.out.println("Adding donation to repository with username: " + item.getOwnerUsername());
 
-        if (currentUser == null) {
-            Log.w(TAG, "No authenticated user found");
-            listener.onDonationFailure(new Exception("User not authenticated"));
-            return;
-        }
+        Map<String, Object> donationData = new HashMap<>();
+        donationData.put("name", item.getName());
+        donationData.put("foodCategory", item.getFoodCategory());
+        donationData.put("description", item.getDescription());
+        donationData.put("expiredDate", item.getExpiredDate());
+        donationData.put("quantity", item.getQuantity());
+        donationData.put("pickupTime", item.getPickupTime());
+        donationData.put("location", item.getLocation());
+        donationData.put("imageResourceId", item.getImageResourceId());
+        donationData.put("imageUrl", item.getImageUrl());
+        donationData.put("ownerUsername", item.getOwnerUsername());
+        donationData.put("ownerProfileImageUrl", item.getOwnerProfileImageUrl());
+        donationData.put("status", item.getStatus());
+        donationData.put("createdAt", item.getCreatedAt());
+        donationData.put("donateType", item.getDonateType());
 
-        String userEmail = currentUser.getEmail();
-        String ownerProfileImageUrl = currentUser.getPhotoUrl() != null ?
-                currentUser.getPhotoUrl().toString() : "";
-
-        // Fetch username from the 'users' collection using email
-        FirebaseFirestore.getInstance().collection("users")
-                .document(userEmail)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    String ownerUsername = "Anonymous"; // Default username
-                    if (documentSnapshot.exists()) {
-                        ownerUsername = documentSnapshot.getString("username");
-                        if (ownerUsername == null || ownerUsername.isEmpty()) {
-                            ownerUsername = "Anonymous";
-                        }
-                    }
-
-                    // Create donation data map
-                    Map<String, Object> donationData = new HashMap<>();
-                    donationData.put("name", item.getName());
-                    donationData.put("foodCategory", item.getFoodCategory());
-                    donationData.put("expiredDate", item.getExpiredDate());
-                    donationData.put("quantity", item.getQuantity());
-                    donationData.put("pickupTime", item.getPickupTime());
-                    donationData.put("location", item.getLocation());
-                    donationData.put("imageResourceId", item.getImageResourceId());
-                    donationData.put("imageUrl", item.getImageUrl());
-                    donationData.put("ownerUsername", ownerUsername);
-                    donationData.put("ownerProfileImageUrl", ownerProfileImageUrl);
-                    donationData.put("status", "active");
-                    donationData.put("createdAt", System.currentTimeMillis());
-                    donationData.put("donateType", "Food");
-
-                    // Add to Firestore
-                    db.collection(COLLECTION_NAME)
-                            .add(donationData)
-                            .addOnSuccessListener(documentReference -> {
-                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                listener.onDonationSuccess();
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.w(TAG, "Error adding document", e);
-                                listener.onDonationFailure(e);
-                            });
-
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Failed to fetch user details", e);
-                    listener.onDonationFailure(e);
-                });
+        db.collection("allDonationItems")
+            .add(donationData)
+            .addOnSuccessListener(documentReference -> {
+                System.out.println("Document saved with username: " + item.getOwnerUsername());
+                listener.onDonationSuccess();
+            })
+            .addOnFailureListener(e -> {
+                System.out.println("Failed to save document: " + e.getMessage());
+                listener.onDonationFailure(e);
+            });
     }
 
 

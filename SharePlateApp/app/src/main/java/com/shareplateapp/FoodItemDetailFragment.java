@@ -125,13 +125,41 @@ public class FoodItemDetailFragment extends Fragment {
         updateUIWithDonationItem(view, currentDonationItem);
 
         Button editButton = view.findViewById(R.id.editButton);
+        Button deleteButton = view.findViewById(R.id.deleteButton);
+        Button completeButton = view.findViewById(R.id.completeButton);
+        Button requestButton = view.findViewById(R.id.requestButton);
         
-        // Show edit button only for the owner
+        // Show edit/delete/complete buttons only for the owner
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null && currentDonationItem != null && 
             currentDonationItem.getOwnerUsername().equals(currentUser.getDisplayName())) {
+            
             editButton.setVisibility(View.VISIBLE);
+            deleteButton.setVisibility(View.VISIBLE);
+            
+            // Show complete button only if status is active
+            if ("active".equals(currentDonationItem.getStatus())) {
+                completeButton.setVisibility(View.VISIBLE);
+                completeButton.setOnClickListener(v -> showCompleteConfirmation(currentDonationItem));
+            } else {
+                completeButton.setVisibility(View.GONE);
+            }
+            
+            // Hide request button for owner
+            requestButton.setVisibility(View.GONE);
+            
+            // Set click listeners
             editButton.setOnClickListener(v -> openEditFragment());
+            deleteButton.setOnClickListener(v -> showDeleteConfirmation(currentDonationItem));
+        } else {
+            // Hide owner controls for non-owners
+            editButton.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
+            completeButton.setVisibility(View.GONE);
+            
+            // Show request button only if item is active
+            requestButton.setVisibility("active".equals(currentDonationItem.getStatus()) ? 
+                View.VISIBLE : View.GONE);
         }
     }
 
@@ -245,7 +273,16 @@ public class FoodItemDetailFragment extends Fragment {
         itemQuantity.setText("Quantity: " + (item.getQuantity() != null ? item.getQuantity() : "N/A"));
         itemPickupTime.setText("Pickup Time: " + (item.getPickupTime() != null ? item.getPickupTime() : "N/A"));
         itemLocation.setText("Location: " + (item.getLocation() != null ? item.getLocation() : "N/A"));
-        itemOwner.setText(item.getOwnerUsername() != null ? item.getOwnerUsername() : "Anonymous");
+
+        // Add detailed debug logging
+        System.out.println("Updating UI with donation item:");
+        System.out.println("Owner username: " + item.getOwnerUsername());
+        System.out.println("Owner username null? " + (item.getOwnerUsername() == null));
+        System.out.println("Owner username empty? " + 
+            (item.getOwnerUsername() != null && item.getOwnerUsername().isEmpty()));
+        
+        itemOwner.setText(item.getOwnerUsername() != null && !item.getOwnerUsername().isEmpty() ? 
+            item.getOwnerUsername() : "Anonymous");
 
         // Show status if completed
         if ("completed".equals(item.getStatus())) {

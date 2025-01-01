@@ -43,7 +43,8 @@
             android:id="@+id/detail_item_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
     </LinearLayout>
 
     <TextView
@@ -51,8 +52,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark"
         android:layout_marginBottom="8dp"
         android:visibility="gone"/>
 

@@ -118,13 +118,18 @@ public class ProfilePage extends Fragment {
         // Set up user profile
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // Set email
-//            email.setText("Email: " + currentUser.getEmail());
-
-            // Set display name if available, otherwise use email
+            // Get display name
             String displayName = currentUser.getDisplayName();
-//            username.setText(displayName != null && !displayName.isEmpty() ?
-//            displayName : currentUser.getEmail());
+            if (displayName != null && !displayName.isEmpty()) {
+                username.setText(displayName);
+            } else {
+                // If no display name, use email without domain
+                String email = currentUser.getEmail();
+                if (email != null) {
+                    String usernameFromEmail = email.split("@")[0];
+                    username.setText(usernameFromEmail);
+                }
+            }
 
             // Load existing profile image if available
             loadProfileImage(currentUser.getUid());
@@ -378,16 +383,19 @@ public class ProfilePage extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // Refresh user data
-//            email.setText("Email: " + currentUser.getEmail());
-
             String displayName = currentUser.getDisplayName();
-//            username.setText(displayName != null && !displayName.isEmpty() ?
-//                    displayName : currentUser.getEmail());
+            if (displayName != null && !displayName.isEmpty()) {
+                username.setText(displayName);
+            } else {
+                String email = currentUser.getEmail();
+                if (email != null) {
+                    String usernameFromEmail = email.split("@")[0];
+                    username.setText(usernameFromEmail);
+                }
+            }
 
             // Reload profile image
             loadProfileImage(currentUser.getUid());
-
-            // Optional: Refresh any other user data you want to update
 
             // End the refreshing animation
             swipeRefreshLayout.setRefreshing(false);

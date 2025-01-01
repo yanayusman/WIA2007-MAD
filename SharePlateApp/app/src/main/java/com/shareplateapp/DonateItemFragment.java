@@ -166,11 +166,14 @@ public class DonateItemFragment extends Fragment {
         submitButton.setEnabled(false);
 
         // Get current user
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(getContext(), "Please login to donate", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        final String ownerUsername = currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty() ?
+            currentUser.getDisplayName() : "Anonymous";
 
         // If image was selected, upload it first
         if (selectedImageUri != null) {
@@ -181,16 +184,20 @@ public class DonateItemFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> 
                     imageRef.getDownloadUrl()
                         .addOnSuccessListener(downloadUri -> {
-                            createDonationWithImage(downloadUri.toString(), currentUser.getDisplayName());
+                            createDonationWithImage(downloadUri.toString(), ownerUsername, currentUser);
                         })
                         .addOnFailureListener(e -> handleError("Failed to get download URL: " + e.getMessage())))
                 .addOnFailureListener(e -> handleError("Failed to upload image: " + e.getMessage()));
         } else {
-            createDonationWithImage(null, currentUser.getDisplayName());
+            createDonationWithImage(null, ownerUsername, currentUser);
         }
     }
 
-    private void createDonationWithImage(String imageUrl, String ownerUsername) {
+    private void createDonationWithImage(String imageUrl, String ownerUsername, FirebaseUser currentUser) {
+        // Add debug logging
+        System.out.println("Creating donation with username: " + ownerUsername);
+        System.out.println("Current user display name: " + currentUser.getDisplayName());
+
         DonationItem newDonation = new DonationItem(
             nameInput.getText().toString(),
             foodCategoryInput.getText().toString(),
@@ -204,12 +211,18 @@ public class DonateItemFragment extends Fragment {
             imageUrl,
             ownerUsername,
             "food", // donateType
-            "" // ownerProfileImageUrl - can be updated later if needed
+            currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : "" // owner profile image
         );
+
+        // Add debug logging for the created item
+        System.out.println("Created donation item with username: " + newDonation.getOwnerUsername());
 
         repository.addDonationItem(newDonation, new DonationItemRepository.OnDonationCompleteListener() {
             @Override
             public void onDonationSuccess() {
+                // Add debug logging for successful save
+                System.out.println("Successfully saved donation with username: " + newDonation.getOwnerUsername());
+                
                 if (getContext() != null) {
                     Toast.makeText(getContext(), "Donation added successfully", Toast.LENGTH_SHORT).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
