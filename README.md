@@ -54,19 +54,21 @@ SharePlate is an Android application designed to facilitate food and non-food it
 
 ## Project Structure
 
+```text
 shareplate/
 ├── app/
-│ ├── src/
-│ │ ├── main/
-│ │ │ ├── java/com/shareplateapp/
-│ │ │ │ ├── activities/
-│ │ │ │ ├── fragments/
-│ │ │ │ ├── models/
-│ │ │ │ └── repositories/
-│ │ │ └── res/
-│ │ └── test/
-│ └── build.gradle.kts
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/shareplateapp/
+│   │   │   │   ├── activities/
+│   │   │   │   ├── fragments/
+│   │   │   │   ├── models/
+│   │   │   │   └── repositories/
+│   │   │   └── res/
+│   │   └── test/
+│   └── build.gradle.kts
 └── build.gradle.kts
+```
 
 ## Requirements
 

@@ -1,5 +1,3 @@
-I'll create a comprehensive documentation for the SharePlate Android application.
-
 # SharePlate Documentation
 
 ## Overview
